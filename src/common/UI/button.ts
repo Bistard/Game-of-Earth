@@ -1,3 +1,4 @@
+import { FastDomNode } from "../domNode.js";
 import { IWidget } from "./widget";
 
 export interface IButtonStyles {
@@ -15,26 +16,26 @@ export interface IButton extends IWidget {
 export class Button implements IButton {
     
     public readonly id: string;
-    public element: HTMLElement;
+    public element: FastDomNode<HTMLElement>;
     public imgElement?: HTMLImageElement;
 
     constructor(id: string, container: HTMLElement) {
         this.id = id;
-        this.element = document.createElement('div');
-        this.element.id = id;
+        this.element = new FastDomNode(document.createElement('div'));
+        this.element.domNode.id = id;
         
-        container.appendChild(this.element);
+        container.appendChild(this.element.domNode);
     }
 
     public setClass(classes: string[]): void {
-        this.element.classList.add(...classes);
+        this.element.domNode.classList.add(...classes);
     }
 
     public setImage(src: string): void {
         this.imgElement = document.createElement('img');
         this.imgElement.src = src;
         
-        this.element.appendChild(this.imgElement);
+        this.element.domNode.appendChild(this.imgElement);
     }
 
     public setImageID(id: string): void {
@@ -47,6 +48,10 @@ export class Button implements IButton {
         if (this.imgElement) {
             this.imgElement.classList.add(...classes);
         }
+    }
+
+    public setText(text: string): void {
+        this.element.domNode.innerHTML = text;
     }
 
 }
