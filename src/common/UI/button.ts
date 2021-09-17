@@ -1,4 +1,4 @@
-import { IWidget } from "src/common/widget";
+import { IWidget } from "./widget";
 
 export interface IButtonStyles {
 
