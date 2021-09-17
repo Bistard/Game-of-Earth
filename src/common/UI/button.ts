@@ -46,4 +46,8 @@ export class Button implements IButton {
         this.element.domNode.innerHTML = text;
     }
 
+    public addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
+        this.element.domNode.addEventListener(type, listener, options);
+    }
+
 }
