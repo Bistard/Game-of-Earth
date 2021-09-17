@@ -1,6 +1,10 @@
+import { Emitter } from "../common/event.js";
 import { Button } from "../common/UI/button.js";
 
 export class StartInterface {
+
+    private static _onDidClickStartButton = new Emitter<void>();
+    public static onDidClickStartButton = StartInterface._onDidClickStartButton.event;
 
     public readonly parentContainer: HTMLElement;
     public container: HTMLElement | undefined;
@@ -9,9 +13,6 @@ export class StartInterface {
         this.parentContainer = parent;
     }
 
-    /**
-     * @description render the window
-     */
     public render(): void {
         
         this.container = document.createElement('div');
@@ -29,13 +30,15 @@ export class StartInterface {
         startBtn.setText('Start');
         startBtn.element.setFontSize(20);
 
+        startBtn.addEventListener('click', () => {
+            // tell all the listeners the startButton is clicked
+            StartInterface._onDidClickStartButton.fire();
+        });
+
     }
 
-    /**
-     * @description destory the window
-     */
     public destory(): void {
-
+        this.parentContainer.removeChild(this.container!);
     }
 
 }

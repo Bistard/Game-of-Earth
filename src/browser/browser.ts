@@ -1,25 +1,32 @@
+import { World } from "../world/world.js";
 import { StartInterface } from "./startInterface.js";
 
 export class Browser {
 
+    
     public readonly mainContainer: HTMLElement = document.getElementById('main-app')!;
 
     public startInterface!: StartInterface;
+    public world!: World;
 
     constructor() {
-
-        this.initStartInterface();
-
+        this.init();
     }
 
     /**
      * @description renders and initializes the start interface.
      */
-    public initStartInterface(): void {
+    public init(): void {
 
         this.startInterface = new StartInterface(this.mainContainer);
         this.startInterface.render();
         
+        StartInterface.onDidClickStartButton(() => {
+            this.startInterface.destory();
+            this.world = new World(this.mainContainer);
+            this.world.render();
+        });
+
     }
 
 }
