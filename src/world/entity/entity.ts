@@ -1,4 +1,4 @@
-import { IPosition } from "../../common/domNode.js";
+import { IPosition } from "../../common/UI/domNode.js";
 
 export type AnimalType = 'Human' | 'Rabbit' | 'Wolf' | 'Bear';
 export type StaticType = 'Grass' | 'Cloud';
