@@ -1,14 +1,6 @@
 import { FastDomNode } from "./domNode.js";
 import { IWidget } from "./widget";
 
-export interface IButtonStyles {
-
-}
-
-export interface IButtonOptions extends IButtonStyles {
-
-}
-
 export interface IButton extends IWidget {
 
 }
