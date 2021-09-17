@@ -1,5 +1,5 @@
 import { World } from "../world/world.js";
-import { StartInterface } from "./startInterface.js";
+import { IStartButtonEvent, StartInterface } from "./startInterface.js";
 
 export class Browser {
 
@@ -21,10 +21,12 @@ export class Browser {
         this.startInterface = new StartInterface(this.mainContainer);
         this.startInterface.render();
         
-        StartInterface.onDidClickStartButton(() => {
-            this.startInterface.destory();
-            this.world = new World(this.mainContainer);
-            this.world.render();
+        StartInterface.onDidClickStartButton((e: IStartButtonEvent) => {
+            if (e.ifClicked) {
+                this.startInterface.destory();
+                this.world = new World(this.mainContainer);
+                this.world.render();
+            }
         });
 
     }

@@ -1,9 +1,13 @@
 import { Emitter } from "../common/event.js";
 import { Button } from "../common/UI/button.js";
 
+export interface IStartButtonEvent {
+    ifClicked: boolean;
+}
+
 export class StartInterface {
 
-    private static _onDidClickStartButton = new Emitter<void>();
+    private static _onDidClickStartButton = new Emitter<IStartButtonEvent>();
     public static onDidClickStartButton = StartInterface._onDidClickStartButton.event;
 
     public readonly parentContainer: HTMLElement;
@@ -32,7 +36,7 @@ export class StartInterface {
 
         startBtn.addEventListener('click', () => {
             // tell all the listeners the startButton is clicked
-            StartInterface._onDidClickStartButton.fire();
+            StartInterface._onDidClickStartButton.fire({ ifClicked: true });
         });
 
     }
