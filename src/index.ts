@@ -1,3 +1,3 @@
-import { Browser } from "./browser.js";
+import { Browser } from "./browser/browser.js";
 
 new Browser();
