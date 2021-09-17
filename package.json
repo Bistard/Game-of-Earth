@@ -1,0 +1,25 @@
+{
+  "name": "game-of-earth",
+  "version": "1.0.0",
+  "description": "group project for the Hack the North 2021",
+  "main": "./build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bistard/Game-of-Earth.git"
+  },
+  "keywords": [
+    "game-of-earth"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bistard/Game-of-Earth/issues"
+  },
+  "homepage": "https://github.com/Bistard/Game-of-Earth#readme",
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  }
+}
