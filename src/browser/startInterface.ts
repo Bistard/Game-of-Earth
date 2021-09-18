@@ -38,7 +38,7 @@ export class StartInterface {
 
     }
 
-    public destory(): void {
+    public destroy(): void {
         this.parentContainer.removeChild(this.container!);
     }
 
