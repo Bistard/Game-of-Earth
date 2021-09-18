@@ -4,7 +4,7 @@ import { LivingEntity } from "./livingEntity.js";
 
 export class Wolf extends LivingEntity {
     constructor(parentContainer: HTMLElement, position: IPosition) {
-        super(LivingType.HUMAN, position, parentContainer, document.createElement('div'));
+        super(LivingType.BEAR, position, parentContainer, document.createElement('div'));
         this.parentContainer.appendChild(this.container);
         this._render();
     }
