@@ -1,4 +1,4 @@
-import { World } from "../world/world.js";
+import { GameInterface } from "./gameInterface.js";
 import { IStartButtonEvent, StartInterface } from "./startInterface.js";
 
 export class Browser {
@@ -7,7 +7,7 @@ export class Browser {
     public readonly mainContainer: HTMLElement = document.getElementById('main-app')!;
 
     public startInterface!: StartInterface;
-    public world!: World;
+    public gameInterface!: GameInterface;
 
     constructor() {
         this.init();
@@ -24,8 +24,8 @@ export class Browser {
         StartInterface.onDidClickStartButton((e: IStartButtonEvent) => {
             if (e.ifClicked) {
                 this.startInterface.destory();
-                this.world = new World(this.mainContainer);
-                this.world.render();
+                this.gameInterface = new GameInterface(this.mainContainer);
+                this.gameInterface.render();
             }
         });
 
