@@ -21,5 +21,8 @@
   "homepage": "https://github.com/Bistard/Game-of-Earth#readme",
   "devDependencies": {
     "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "ts-priority-queue": "^0.1.1"
   }
 }
