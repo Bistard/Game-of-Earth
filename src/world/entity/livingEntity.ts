@@ -80,11 +80,17 @@ export abstract class LivingEntity extends Entity {
     }
 
     protected _chaseTo(entity: Entity): IVector {
-        return {dx: 0, dy: 0};
+        const s  = this.speed / calcDistance(this.position, entity.position);
+        const dx = s * (entity.position.x - this.position.x);
+        const dy = s * (entity.position.y - this.position.y);
+        return {dx: dx, dy: dy};
     }
 
     protected _runAwayFrom(entity: Entity): IVector {
-        return {dx: 0, dy: 0};
+        const s  = this.speed / calcDistance(this.position, entity.position);
+        const dx = s * (this.position.x - entity.position.x);
+        const dy = s * (this.position.y - entity.position.y);
+        return {dx: dx, dy: dy}; 
     }
 
 }
