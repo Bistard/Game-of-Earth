@@ -1,5 +1,5 @@
 import { World } from "../world/world.js";
-import { ToolList, ToolListClickEvent } from "./toolList.js";
+import { ICreateEntityEvent, ToolList } from "./toolList.js";
 
 export class GameInterface {
 
@@ -7,36 +7,46 @@ export class GameInterface {
     public container: HTMLElement;
 
     public readonly world: World;
-
+    
     constructor(parent: HTMLElement) {
         
         this.parentContainer = parent;
         this.container = document.createElement('div');
-        this.container.id = 'too-list';
+        this.container.id = 'game-interface';
         
-        this.world = new World();
+        this.world = new World(this.container);    
     }
 
     public render(): void {
         this.parentContainer.appendChild(this.container);
-        this.initToolList();
+        this.renderToolList();
         this.registerListeners();
+
+        this.runGame();
     }
 
     public registerListeners(): void {
 
         // listen to the emitter
-        ToolList.onCreateRabbit((e: ToolListClickEvent) => {
-            const position  = e.position;
-            console.log(position.x);
-            console.log(position.y);
+        ToolList.onCreateEntity((e: ICreateEntityEvent) => {
+            // debug
+            console.log(e.position.x);
+            console.log(e.position.y);
+            
+            this.world.createEntity(e.position, e.type);
         });
 
     }
 
-    public initToolList(): void {
+    public renderToolList(): void {
 
         const toolList = new ToolList(this.container);
+
+    }
+
+    public runGame(): void {
+
+        this.world.run();
 
     }
 

@@ -1,8 +1,10 @@
 import { Emitter } from "../common/event.js";
 import { Button } from "../common/UI/button.js";
 import { IPosition } from "../common/UI/domNode.js";
+import { EntityType, LivingType } from "../world/entity/entity.js";
 
-export interface ToolListClickEvent {
+export interface ICreateEntityEvent {
+    type: EntityType;
     position: IPosition;
 }
 
@@ -11,26 +13,14 @@ export class ToolList {
     public readonly parentContainer: HTMLElement;
     public readonly container: HTMLElement;
 
-    // rabbit emitter
-    private static _onCreateRabbit = new Emitter<ToolListClickEvent>();
-    public static onCreateRabbit = ToolList._onCreateRabbit.event;
+    // entity creation emitter
+    private static _onCreateEntity = new Emitter<ICreateEntityEvent>();
+    public static onCreateEntity = ToolList._onCreateEntity.event;
     
-    // human emitter
-    private static _onCreateHuman = new Emitter<ToolListClickEvent>();
-    public static onCreateHuman = ToolList._onCreateHuman.event;
-
-    // Wolf emitter
-    private static _onCreateWolf = new Emitter<ToolListClickEvent>();
-    public static onCreateWolf = ToolList._onCreateWolf.event;
-
-    // Bear emitter
-    private static _onCreateBear = new Emitter<ToolListClickEvent>();
-    public static onCreateBear = ToolList._onCreateBear.event;
-
     constructor(parent: HTMLElement) {
         this.parentContainer = parent;
         this.container = document.createElement('div');
-        this.container.id = 'too-list';
+        this.container.id = 'tool-list';
     }
 
     public render(): void {
@@ -38,7 +28,10 @@ export class ToolList {
         
         const rabbitBtn = new Button('rabbit-create-button', this.container);
         rabbitBtn.addEventListener('click', (ev: MouseEvent) => {
-            ToolList._onCreateRabbit.fire( { position: {x: ev.x, y: ev.y} } );
+            ToolList._onCreateEntity.fire({
+                type: LivingType.RABBIT, 
+                position: {x: ev.x, y: ev.y},
+            });
         });
 
     }
