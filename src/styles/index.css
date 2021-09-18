@@ -1,5 +1,8 @@
 @import "./common.css";
+@import "./world/entity.css";
+@import "./world/world.css";
 @import "./startInterface/startInterface.css";
+@import "./startInterface/gameInterface.css";
 
 body {
     margin: 0px;

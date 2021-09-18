@@ -1,0 +1,13 @@
+
+.human-entity {
+
+    position: absolute;
+
+    width: 15px;
+    height: 15px;
+
+    border-radius: 100px;
+
+    background-color: black;
+    
+}
