@@ -80,11 +80,11 @@ export abstract class LivingEntity extends Entity {
     }
 
     protected _chaseTo(entity: Entity): IVector {
-
+        return {dx: 0, dy: 0};
     }
 
     protected _runAwayFrom(entity: Entity): IVector {
-        
+        return {dx: 0, dy: 0};
     }
 
 }
