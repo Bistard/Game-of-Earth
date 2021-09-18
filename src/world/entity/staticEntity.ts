@@ -5,5 +5,7 @@ export abstract class  StaticEntity extends Entity {
     constructor(type: StaticType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
 
+        this.container.classList.add('static-entity');
+
     }
 }

@@ -23,6 +23,13 @@
     background-image: url("../../assets/bear.png");
 }
 
+.static-entity {
+    position: absolute;
+}
+
 .grass-entity {
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
     background-image: url("../../assets/grass.png");
 }
