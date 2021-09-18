@@ -69,5 +69,6 @@ export abstract class Entity implements IEntity {
     }
 
     public abstract update(): void;
+    protected abstract _render(): void;
 
 }
