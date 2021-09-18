@@ -28,12 +28,12 @@ export class GameInterface {
     public registerListeners(): void {
 
         // listen to the emitter
-        ToolList.onCreateEntity((e: ICreateEntityEvent) => {
+        ToolList.onCreateEntity((event: ICreateEntityEvent) => {
             // debug
-            console.log(e.position.x);
-            console.log(e.position.y);
+            console.log(event.position.x);
+            console.log(event.position.y);
             
-            this.world.createEntity(e.position, e.type);
+            this.world.createEntity(event.position, event.type);
         });
 
     }

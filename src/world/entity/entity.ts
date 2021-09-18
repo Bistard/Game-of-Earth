@@ -10,7 +10,8 @@ export enum LivingType {
 
 export enum StaticType {
     GRASS = 0,
-    CLOUD
+    CLOUD,
+    FOREST
 }
 
 export type EntityType = LivingType | StaticType;

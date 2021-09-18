@@ -11,15 +11,20 @@ export enum SpeedRate {
     VERY_FAST = 1.5,
 }
 
-export abstract class  LivingEntity extends Entity {
+interface IVector {
+    dx: number;
+    dy: number;
+}
+
+export abstract class LivingEntity extends Entity {
 
     public readonly health: number = 100;
     public readonly hungry: number = 100;
     public readonly engery: number = 100;
 
-    public readonly speed!: number;
-    public readonly hungryRate!: number;
-    public readonly sightRange!: number;
+    public readonly speed: number;
+    public readonly hungryRate: number;
+    public readonly sightRange: number;
 
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
@@ -61,6 +66,10 @@ export abstract class  LivingEntity extends Entity {
         const length = World.entities.length;
         for (let i = 0; i < length; i++) {
             const otherEntity = World.entities[i]!;
+            if (this === otherEntity) {
+                continue;
+            }
+
             const distance = calcDistance(this.position, otherEntity.position);
             if (distance <= this.sightRange) {
                 entities.push(otherEntity);
@@ -69,4 +78,13 @@ export abstract class  LivingEntity extends Entity {
         
         return entities;
     }
+
+    protected _chaseTo(entity: Entity): IVector {
+
+    }
+
+    protected _runAwayFrom(entity: Entity): IVector {
+        
+    }
+
 }

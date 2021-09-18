@@ -14,6 +14,8 @@ export interface IDimension {
     height: number;
 }
 
+
+
 export class Dimension implements IDimension {
 
 	static readonly None = new Dimension(0, 0);

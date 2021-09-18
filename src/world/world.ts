@@ -10,6 +10,8 @@ enum TimeElapseRate {
 
 export class World {
 
+    private static readonly INIT_TOTAL_ENTITY_COUNT = 40;
+
     private readonly _parentContainer: HTMLElement;
 
     public static entityID: number = 0;
@@ -60,7 +62,15 @@ export class World {
     }
 
     private _initMap(): void {
-        
+
+        const totalLeft = World.INIT_TOTAL_ENTITY_COUNT
+
+        for (let i = 0; i < World.INIT_TOTAL_ENTITY_COUNT; i++) {
+
+            
+
+        }
+
         new Human(this._parentContainer, {x: 0, y: 0}); // DEBUG
 
     }
