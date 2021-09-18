@@ -34,6 +34,7 @@ export abstract class Entity implements IEntity {
     public readonly id: number;
     public readonly type: EntityType;
     public readonly position: IPosition;
+    public readonly dimension!: IDimension;
 
     constructor(type: EntityType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         this.id = World.entityID++;
@@ -46,28 +47,48 @@ export abstract class Entity implements IEntity {
          * @readonly maintains the state of World
          */
         
+
         World.entities.push(this);
         switch(type) {
             case LivingType.RABBIT:
                 World.state.count.rabbit++;
+                this.dimension = new Dimension(30, 30);
                 break;
             case LivingType.HUMAN:
                 World.state.count.human++;
+                this.dimension = new Dimension(30, 30);
                 break;
             case LivingType.WOLF:
                 World.state.count.wolf++;
+                this.dimension = new Dimension(30, 30);
                 break;
             case LivingType.BEAR:
                 World.state.count.bear++;
+                this.dimension = new Dimension(30, 30);
                 break;
             case StaticType.GRASS:
                 World.state.count.grass++;
+                this.dimension = new Dimension(30, 30);
                 break;
             case StaticType.CLOUD:
                 World.state.count.cloud++;
+                this.dimension = new Dimension(30, 30);
                 break;
         }
 
+    }
+
+    static isOverlap(m: Entity, n: Entity) : boolean {
+        let mlx : number = m.position.x;
+        let mly : number = m.position.y;
+        let mrx : number = m.position.x + m.dimension.width;
+        let mry : number = m.position.x - m.dimension.height;
+        let nlx : number = n.position.x;
+        let nly : number = n.position.y;
+        let nrx : number = n.position.x + n.dimension.width;
+        let nry : number = n.position.x - n.dimension.height;
+
+        return !((mlx >= nrx || nlx >= mrx) || (mry >= nly || nry >= mly))
     }
 
     public abstract update(): void;
