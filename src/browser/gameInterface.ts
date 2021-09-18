@@ -21,7 +21,7 @@ export class GameInterface {
         this.parentContainer.appendChild(this.container);
         this.renderToolList();
         this.registerListeners();
-
+        
         this.runGame();
     }
 

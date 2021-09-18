@@ -33,3 +33,10 @@
     background-size: 20px;
     background-image: url("../../assets/grass.png");
 }
+
+.forest-entity {
+    width: 30px;
+    height: 30px;
+    background-size: 30px;
+    background-image: url("../../assets/tree.png");
+}
