@@ -51,6 +51,7 @@ export class World {
             this._updateWorld();
         }, 1 / (60 * World.state.TimeElapseRate) * 1000);
         
+        this.printWorldInformation();
     }
 
     /**
@@ -70,55 +71,44 @@ export class World {
 
     private _initMap(): void {
 
-        let totalLeft = World.INIT_TOTAL_ENTITY_COUNT;
-        const arr : number[] = [];
-        let sum = 0;
-        for(let i = 0; i < 7; i++){
-            let temp = Math.random();
-            sum += temp;
-            arr.push(temp);
+        // entityCounts[i]: i'th entity count
+        const entityCounts: number[] = [];
+        
+        let total = 0;
+        for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE; i++) {
+            const rate = Math.random();
+            total += rate;
+            entityCounts.push(rate);
         } 
-        for(let i = 0; i < 7; i++){
-            arr[i] = Math.floor(arr[i]! / sum * World.INIT_TOTAL_ENTITY_COUNT + 0.5);
-        }
-        for(let i = 0; i < arr[0]!; i++){
-            new Human(this._parentContainer, 
-                {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()})
-        }
-        for(let i = 0; i < arr[1]!; i++){
-            new Rabbit(this._parentContainer, 
-                {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()})
-        }
-        for(let i = 0; i < arr[2]!; i++){
-            new Wolf(this._parentContainer, 
-                {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()})
-        }
-        for(let i = 0; i < arr[3]!; i++){
-            new Bear(this._parentContainer, 
-                {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()})
-        }
-        for(let i = 0; i < arr[4]!; i++){
-            new Grass(this._parentContainer, 
-                {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()})
-        }
-        for(let i = 0; i < arr[5]!; i++){
-            new Cloud(this._parentContainer, 
-                {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()})
-        }
-        for(let i = 0; i < arr[6]!; i++){
-            new Forest(this._parentContainer, 
-                {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()})
+        
+        for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE; i++) {
+            entityCounts[i] = Math.floor((entityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT + 0.5);
         }
 
-        new Human(this._parentContainer, {x: 100, y: 100}); // DEBUG
-        new Rabbit(this._parentContainer, {x: 200, y: 200}); // DEBUG
-        new Wolf(this._parentContainer, {x: 300, y: 300}); // DEBUG
-        new Bear(this._parentContainer, {x: 400, y: 400}); // DEBUG
+        const instantiations = [Human, Rabbit, Wolf, Bear, Grass, Cloud, Forest];
+        for (let i = 0; i < entityCounts.length; i++) {
+
+            for(let j = 0; j < entityCounts[i]!; j++) {
+                new instantiations[i]!(
+                    this._parentContainer, 
+                    {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()}
+                );
+            }
+
+        }
 
     }
 
     public createEntity(position: IPosition, type: EntityType): void {
         // do stuff here
+    }
+
+    public printWorldInformation(): void {
+
+        console.log('World.entities: ', World.entities);
+
+        console.log('World.state: ', World.state);
+        
     }
 
 }

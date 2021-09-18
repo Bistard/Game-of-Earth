@@ -22,3 +22,7 @@
 .bear-entity {
     background-image: url("../../assets/bear.png");
 }
+
+.grass-entity {
+    background-image: url("../../assets/grass.png");
+}

@@ -10,7 +10,7 @@ export class Grass extends StaticEntity {
     }
 
     public override update(): void {
-
+        
     }
 
     protected override _render(): void {
