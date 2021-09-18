@@ -1,5 +1,12 @@
 import { Dimension, IDimension, IPosition } from "../../common/UI/domNode.js";
 import { World } from "../world.js";
+import { Bear } from "./bear.js";
+import { Cloud } from "./cloud.js";
+import { Forest } from "./forest.js";
+import { Grass } from "./grass.js";
+import { Human } from "./human.js";
+import { Rabbit } from "./rabbit.js";
+import { Wolf } from "./wolf.js";
 
 export enum LivingType {
     HUMAN = 0,
@@ -46,7 +53,6 @@ export abstract class Entity implements IEntity {
         /**
          * @readonly maintains the state of World
          */
-        
 
         World.entities.push(this);
         switch(type) {
@@ -78,17 +84,32 @@ export abstract class Entity implements IEntity {
 
     }
 
-    static isOverlap(m: Entity, n: Entity) : boolean {
-        let mlx : number = m.position.x;
-        let mly : number = m.position.y;
-        let mrx : number = m.position.x + m.dimension.width;
-        let mry : number = m.position.x - m.dimension.height;
-        let nlx : number = n.position.x;
-        let nly : number = n.position.y;
-        let nrx : number = n.position.x + n.dimension.width;
-        let nry : number = n.position.x - n.dimension.height;
+    public static isOverlap(p1: IPosition, p2: IPosition, d1: IDimension, d2: IDimension) : boolean {
+        let mlx = p1.x;
+        let mly = p1.y;
+        let mrx = p1.x + d1.width;
+        let mry = p1.x - d1.height;
+        let nlx = p2.x;
+        let nly = p2.y;
+        let nrx = p2.x + d2.width;
+        let nry = p2.x - d2.height;
+        return !((mlx >= nrx || nlx >= mrx) || (mry >= nly || nry >= mly));
+    }
 
-        return !((mlx >= nrx || nlx >= mrx) || (mry >= nly || nry >= mly))
+    public static getDimensionByClass(type: LivingType | StaticType): IDimension {
+        switch(type) {
+            case LivingType.HUMAN:
+            case LivingType.RABBIT:
+            case LivingType.WOLF:
+            case LivingType.BEAR:
+                return { width: 30, height: 30 };
+            case StaticType.GRASS:
+                return { width: 20, height: 20 };
+            case StaticType.CLOUD:
+            case StaticType.FOREST:
+            default:
+                return { width: -1, height: -1 };
+        }
     }
 
     public abstract update(): void;

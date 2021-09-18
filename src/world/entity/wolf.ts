@@ -9,7 +9,7 @@ export class Wolf extends LivingEntity {
         this._render();
     }
 
-    public override update(): void {
+    protected override _update(): void {
         // TODO
     }
 

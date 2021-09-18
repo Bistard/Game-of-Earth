@@ -11,7 +11,7 @@ export enum SpeedRate {
     VERY_FAST = 1.5,
 }
 
-interface IVector {
+export interface IVector {
     dx: number;
     dy: number;
 }
