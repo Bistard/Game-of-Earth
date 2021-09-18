@@ -1,4 +1,4 @@
-import { IDimension, IPosition, Dimension } from "../../common/UI/domNode.js";
+import { Dimension, IDimension, IPosition } from "../../common/UI/domNode.js";
 import { World } from "../world.js";
 
 export enum LivingType {
@@ -25,6 +25,8 @@ export interface IEntity {
 }
 
 export abstract class Entity implements IEntity {
+
+    public static readonly TOTAL_ENTITY_TYPE: number = 7;
 
     public readonly parentContainer: HTMLElement;
     public readonly container: HTMLElement;

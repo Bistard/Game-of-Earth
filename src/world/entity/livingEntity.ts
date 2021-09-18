@@ -29,6 +29,7 @@ export abstract class LivingEntity extends Entity {
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
 
+        this.container.classList.add('living-entity');
         this.sightRange = 300;
         
         switch(type) {
@@ -51,6 +52,18 @@ export abstract class LivingEntity extends Entity {
         }
 
     }
+
+    public override update(): void {
+
+        // region
+        // manipulation ot pq
+        // endregion
+
+        this._update();
+
+    }
+
+    protected abstract _update(): void;
 
     protected _moveTo(position: IPosition): void {
         this.container.style.left = position.x + 'px';

@@ -1,11 +1,28 @@
 
-.human-entity {
-
+.living-entity {
     position: absolute;
 
     width: 30px;
     height: 30px;
+    background-size: 30px;
+}
 
+.human-entity {
     background-image: url("../../assets/human.png");
-    
+}
+
+.rabbit-entity {
+    background-image: url("../../assets/rabbit.png");
+}
+
+.wolf-entity {
+    background-image: url("../../assets/wolf.png");
+}
+
+.bear-entity {
+    background-image: url("../../assets/bear.png");
+}
+
+.grass-entity {
+    background-image: url("../../assets/grass.png");
 }
