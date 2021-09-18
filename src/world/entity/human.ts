@@ -18,7 +18,7 @@ export class Human extends LivingEntity {
     }
 
     protected override _render(): void {
-
+        
         this.container.classList.add('human-entity');
         this._moveTo(this.position);
 
