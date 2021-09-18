@@ -20,7 +20,7 @@ export abstract class LivingEntity extends Entity {
 
     public readonly health: number = 100;
     public readonly hungry: number = 100;
-    public readonly engery: number = 100;
+    public readonly energy: number = 100;
 
     public readonly speed: number;
     public readonly hungryRate: number;
