@@ -53,6 +53,18 @@ export abstract class LivingEntity extends Entity {
 
     }
 
+    public override update(): void {
+
+        // region
+        // manipulation ot pq
+        // endregion
+
+        this._update();
+
+    }
+
+    protected abstract _update(): void;
+
     protected _moveTo(position: IPosition): void {
         this.container.style.left = position.x + 'px';
         this.container.style.top = position.y + 'px';
