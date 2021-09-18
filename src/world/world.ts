@@ -1,6 +1,9 @@
 import { IPosition } from "../common/UI/domNode.js";
 import { Entity, EntityType } from "./entity/entity.js";
+import { Bear } from "./entity/bear.js";
 import { Human } from "./entity/human.js";
+import { Rabbit } from "./entity/rabbit.js";
+import { Wolf } from "./entity/wolf.js";
 
 enum TimeElapseRate {
     ONE = 1,
@@ -71,7 +74,10 @@ export class World {
 
         }
 
-        new Human(this._parentContainer, {x: 0, y: 0}); // DEBUG
+        new Human(this._parentContainer, {x: 100, y: 100}); // DEBUG
+        new Rabbit(this._parentContainer, {x: 200, y: 200}); // DEBUG
+        new Wolf(this._parentContainer, {x: 300, y: 300}); // DEBUG
+        new Bear(this._parentContainer, {x: 400, y: 400}); // DEBUG
 
     }
 

@@ -29,6 +29,7 @@ export abstract class LivingEntity extends Entity {
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
 
+        this.container.classList.add('living-entity');
         this.sightRange = 300;
         
         switch(type) {
