@@ -1,5 +1,6 @@
 import { IPosition } from "../../common/UI/domNode.js";
 import { calcDistance } from "../../common/utils/math.js";
+import { World } from "../world.js";
 import { LivingType, StaticType } from "./entity.js";
 import { LivingEntity, TodoType } from "./livingEntity.js";
 
@@ -12,22 +13,39 @@ export class Rabbit extends LivingEntity {
 
     protected override _update(): void {
         if (this.pq.length == 0) {
+            this.randomMove();
             this.hungry -= this.hungryRate;
-            this.move();
+            if(this.hungry == 0){
+                // TODO: Die
+            }
+            return;
         }
         const nextTODO = this.pq.dequeue();
         switch(nextTODO.item) {
             case TodoType.HUNGRY:
                 const surroundings = this._checkSurroundEntity();
-                    for (let e of surroundings) {
-                        if (e.type == StaticType.GRASS) {
-                            //case when the grass is beyond eat range
-                            const distance = calcDistance(this.position, e.position);
-                            // TODO
-
-
+                // find grass inside sightrange
+                for (let e of surroundings) {
+                    if (e.type == StaticType.GRASS) {
+                        const distance = calcDistance(this.position, e.position);
+                        if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
+                            // case when the grass is inside eat range
+                            this.eat(e);
+                            this.hungry = 100;
+                            // TODO: No specific plan on the number so far
+                        } else {
+                            // case when the grass is outside eat range
+                            this._chaseTo(e);
+                            this.hungry -= this.hungryRate;
+                            this.pq.queue(nextTODO);
                         }
+                        return;
                     }
+                }
+                // no grass inside sightrange, continue randomMove
+                this.hungry -= this.hungryRate;
+                this.randomMove();
+                this.pq.queue(nextTODO);
                 break;
         }
     }
@@ -39,7 +57,7 @@ export class Rabbit extends LivingEntity {
 
     }
 
-    private move(): void {
+    private randomMove(): void {
         const dx = this.speed * Math.random();
         const dy = Math.sqrt(this.speed^2 - dx^2);
         if (Math.random() >= 0.5) {

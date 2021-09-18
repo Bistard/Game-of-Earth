@@ -16,11 +16,6 @@ export enum TodoType {
     HUNGRY,
 }
 
-interface IVector {
-    dx: number;
-    dy: number;
-}
-
 interface IPQItems {
     priority: number;
     item: TodoType;
@@ -70,6 +65,15 @@ export abstract class LivingEntity extends Entity {
 
     }
 
+    protected eat(entity: Entity): void {
+        for(let i = 0; i < World.entities.length; i++){
+            if (World.entities[i] == entity) {
+                World.entities.splice(i, 1);
+                break;
+            }
+        }
+    }
+
     public override update(): void {
 
         // region
@@ -115,18 +119,24 @@ export abstract class LivingEntity extends Entity {
         return entities;
     }
 
-    protected _chaseTo(entity: Entity): IVector {
+    protected _chaseTo(entity: Entity):void {
         const s  = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (entity.position.x - this.position.x);
         const dy = s * (entity.position.y - this.position.y);
-        return {dx: dx, dy: dy};
+        this._moveTo({
+            x: this.position.x + dx, 
+            y: this.position.y + dy
+        });
     }
 
-    protected _runAwayFrom(entity: Entity): IVector {
+    protected _runAwayFrom(entity: Entity):void {
         const s  = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (this.position.x - entity.position.x);
         const dy = s * (this.position.y - entity.position.y);
-        return {dx: dx, dy: dy}; 
+        this._moveTo({
+            x: this.position.x + dx, 
+            y: this.position.y + dy
+        });
     }
 
 }
