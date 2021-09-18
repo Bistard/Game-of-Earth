@@ -1,3 +1,4 @@
+import PriorityQueue from "ts-priority-queue";
 import { IPosition } from "../../common/UI/domNode.js";
 import { calcDistance } from "../../common/utils/math.js";
 import { World } from "../world.js";
@@ -11,24 +12,40 @@ export enum SpeedRate {
     VERY_FAST = 1.5,
 }
 
+export enum TodoType {
+    HUNGRY,
+}
+
 interface IVector {
     dx: number;
     dy: number;
 }
 
+interface IPQItems {
+    priority: number;
+    item: TodoType;
+}
+
 export abstract class LivingEntity extends Entity {
 
-    public readonly health: number = 100;
-    public readonly hungry: number = 100;
-    public readonly energy: number = 100;
+    public health: number = 100;
+    public hungry: number = 100;
+    public energy: number = 100;
 
     public readonly speed: number;
     public readonly hungryRate: number;
     public readonly sightRange: number;
 
+    protected readonly pq: PriorityQueue<IPQItems>
+        = new PriorityQueue({
+            comparator: (a: IPQItems, b:IPQItems) => {
+                return a.priority - b.priority;
+            }
+        });
+
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
-
+    
         this.container.classList.add('living-entity');
         this.sightRange = 300;
         
@@ -58,9 +75,15 @@ export abstract class LivingEntity extends Entity {
         // region
         // manipulation ot pq
         // endregion
+        if (this.hungry < 40) {
+            this.pq.queue({
+                priority: 2,
+                item: TodoType.HUNGRY
+            })
+        }
 
         this._update();
-
+        
     }
 
     protected abstract _update(): void;
