@@ -1,5 +1,7 @@
+
 import { IPosition } from "../../common/UI/domNode.js";
 import { calcDistance } from "../../common/utils/math.js";
+import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
 import { Entity, LivingType } from "./entity.js";
 
@@ -11,24 +13,37 @@ export enum SpeedRate {
     VERY_FAST = 1.5,
 }
 
-export interface IVector {
-    dx: number;
-    dy: number;
+export enum TodoType {
+    HUNGRY,
+    TIRE,
+    RUN
+}
+
+interface IPQItems {
+    priority: number;
+    item: TodoType;
 }
 
 export abstract class LivingEntity extends Entity {
 
-    public readonly health: number = 100;
-    public readonly hungry: number = 100;
-    public readonly energy: number = 100;
+    public health: number = 100;
+    public hungry: number = 100;
+    public energy: number = 100;
 
     public readonly speed: number;
     public readonly hungryRate: number;
     public readonly sightRange: number;
 
+    protected readonly pq: PriorityQueue<IPQItems>
+        = new PriorityQueue({
+            comparator: (a: IPQItems, b:IPQItems) => {
+                return a.priority - b.priority;
+            }
+        });
+
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
-
+    
         this.container.classList.add('living-entity');
         this.sightRange = 300;
         
@@ -53,14 +68,32 @@ export abstract class LivingEntity extends Entity {
 
     }
 
+    protected _eat(entity: number): void {
+        for(let i = 0; i < World.entities.length; i++) {
+            if (World.entities[i]!.id == entity) {
+                const e = World.entities[i];
+                e?.parentContainer.removeChild(e.container);
+                World.entities.splice(i, 1);
+                break;
+            }
+        }
+    }
+
     public override update(): void {
 
         // region
         // manipulation ot pq
         // endregion
+        if (this.hungry < 40) {
+            this.pq.queue({
+                priority: 2,
+                item: TodoType.HUNGRY
+            })
+        }
+        
 
         this._update();
-
+        
     }
 
     protected abstract _update(): void;
@@ -92,18 +125,24 @@ export abstract class LivingEntity extends Entity {
         return entities;
     }
 
-    protected _chaseTo(entity: Entity): IVector {
+    protected _chaseTo(entity: Entity):void {
         const s  = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (entity.position.x - this.position.x);
         const dy = s * (entity.position.y - this.position.y);
-        return {dx: dx, dy: dy};
+        this._moveTo({
+            x: this.position.x + dx, 
+            y: this.position.y + dy
+        });
     }
 
-    protected _runAwayFrom(entity: Entity): IVector {
+    protected _runAwayFrom(entity: Entity):void {
         const s  = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (this.position.x - entity.position.x);
         const dy = s * (this.position.y - entity.position.y);
-        return {dx: dx, dy: dy}; 
+        this._moveTo({
+            x: this.position.x + dx, 
+            y: this.position.y + dy
+        });
     }
 
 }
