@@ -19,3 +19,38 @@
     line-height: 16px;
 
 }
+
+#tool-list {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    
+    width: 40px;
+    height: auto;
+}
+
+#living-tool-list {
+
+    display: flex;
+    flex-direction: column;
+}
+
+#static-tool-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.tool-button {
+    position: relative;
+    
+    width: 30px;
+    height: 30px;
+
+    margin: 5px;
+
+    background-color: aqua;
+    
+}

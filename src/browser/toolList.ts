@@ -26,7 +26,18 @@ export class ToolList {
     public render(): void {
         this.parentContainer.appendChild(this.container);
         
+        const livingContainer = document.createElement('div');
+        livingContainer.id = 'living-tool-list';
+
+        const staticContainer = document.createElement('div');
+        staticContainer.id = 'static-tool-list';
+
+        this.container.appendChild(staticContainer);
+        this.container.appendChild(livingContainer);
+
         const rabbitBtn = new Button('rabbit-create-button', this.container);
+        rabbitBtn.element.domNode.classList.add('tool-button', 'button');
+
         rabbitBtn.addEventListener('click', (ev: MouseEvent) => {
             ToolList._onCreateEntity.fire({
                 type: LivingType.RABBIT, 

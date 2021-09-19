@@ -9,6 +9,8 @@ export class GameInterface {
     public static currTimeElement: HTMLElement;
     public static currTimeCount: number = -1;
 
+    public static toolList: ToolList;
+
     public readonly world: World;
     
     constructor(parent: HTMLElement) {
@@ -58,7 +60,8 @@ export class GameInterface {
 
     public renderToolList(): void {
 
-        const toolList = new ToolList(this.container);
+        GameInterface.toolList = new ToolList(this.container);
+        GameInterface.toolList.render();
 
     }
 
