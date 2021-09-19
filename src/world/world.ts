@@ -19,7 +19,7 @@ enum TimeElapseRate {
 
 export class World {
 
-    private static readonly INIT_TOTAL_ENTITY_COUNT = 100;
+    private static readonly INIT_TOTAL_ENTITY_COUNT = 200;
 
     private readonly _parentContainer: HTMLElement;
 

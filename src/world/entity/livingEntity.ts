@@ -38,7 +38,7 @@ export abstract class LivingEntity extends Entity {
     
     public health: number = 100;
     public hungry: number = 100;
-    public energy: number = 100;
+    private _energy: number = 100;
 
     public readonly speed: number;
     public speedrate: number = 1;
@@ -63,7 +63,26 @@ export abstract class LivingEntity extends Entity {
     protected readonly state = {
         beingChaseVecsBuffer: [] as IVector[],
         beingChaseVecs: [] as IVector[],
+        outOfEnergy: false,
     };
+
+    set energy(val: number) {
+        this._energy = val;
+        if (val === 0 && !this.state.outOfEnergy) {
+            this.state.outOfEnergy = true;
+            setTimeout(() => {
+                if (this._energy === 0) {
+                    this._goDie();
+                } else {
+                    this.state.outOfEnergy = false;
+                }
+            }, 5000);
+        }
+    }
+
+    get energy(): number {
+        return this._energy;
+    }
 
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
@@ -103,7 +122,7 @@ export abstract class LivingEntity extends Entity {
     public override update(): void {
 
         // detect if hungry
-        if (this.hungry < 40 && !this.todoState.hungry) {
+        if (this.hungry < 70 && !this.todoState.hungry) {
             this.pq.queue({
                 priority: 1,
                 item: TodoType.HUNGRY,
@@ -157,9 +176,9 @@ export abstract class LivingEntity extends Entity {
     protected _onSleep(): void {
         // common method on dealing with running out of energy
         // stopped and starting restoring energy
-        this.energy = Math.max(this.energy + this.energyRate, 100);
-        this.health = Math.max(this.health + this.healthRestoreRate, 100);
-        this.hungry = Math.min(this.hungry - this.hungryRate * 0.3, 0);
+        this.energy = Math.min(this.energy + this.energyRate, 100);
+        this.health = Math.min(this.health + this.healthRestoreRate, 100);
+        this.hungry = Math.max(this.hungry - this.hungryRate * 0.3, 0);
         
         if (this.energy > 80) {
             this.pq.dequeue();
@@ -168,12 +187,18 @@ export abstract class LivingEntity extends Entity {
     }
 
     protected _onBeingChase(): void {
-        
+        if(this.state.beingChaseVecsBuffer.length == 0) { //not being chased anymore
+            this.pq.dequeue();
+            this.todoState.beingChase = false;
+            return;
+        }
         this.state.beingChaseVecs = this.state.beingChaseVecsBuffer.slice();
         let escapeDir = getEscapeVec(this.state.beingChaseVecs);
         escapeDir.dx *= (this.speed * this.speedrate);
         escapeDir.dy *= (this.speed * this.speedrate);
         this._moveInDir(escapeDir);
+        this.energy = Math.max(this.energy - this.energyRate, 0);
+        this.hungry = Math.max(this.hungry - this.hungryRate, 0);
     }
 
     /***************************************************************************
@@ -184,6 +209,7 @@ export abstract class LivingEntity extends Entity {
         Entity.removeEntity(entity);
         this.hungry = 100;
         this.todoState.hungry = false;
+        this.pq.dequeue();
     }
 
     protected _eatOrChase(entity: Entity): void {
@@ -191,11 +217,9 @@ export abstract class LivingEntity extends Entity {
         if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
             // case when the grass is inside eat range
             this._eat(entity);
-            this.pq.dequeue();
         } else {
             // case when the grass is outside eat range
             this._chase(entity);
-            this.hungry -= this.hungryRate;
         }
     }
 
@@ -203,13 +227,17 @@ export abstract class LivingEntity extends Entity {
 
         if (this.hungry <= 0) {
             // hungry detection
-            const index = World.entities.indexOf(this);
-            World.entities.splice(index, 1);
-            this.parentContainer.removeChild(this.container);
+            this._goDie();
         } else if (this.health <= 0) {
             // health detection
         }
 
+    }
+
+    protected _goDie(): void {
+        const index = World.entities.indexOf(this);
+        World.entities.splice(index, 1);
+        this.parentContainer.removeChild(this.container);
     }
 
     protected _chase(entity: Entity | LivingEntity): void {
@@ -224,7 +252,8 @@ export abstract class LivingEntity extends Entity {
         };
 
         this._moveTo(vect);
-
+        this.energy = Math.max(this.energy - this.energyRate, 0);
+        this.hungry = Math.max(this.hungry - this.hungryRate, 0);
         
         if (entity instanceof LivingEntity) {
             // notify the entity that is being chased
@@ -236,7 +265,7 @@ export abstract class LivingEntity extends Entity {
     protected _chaseNotified(vector: IVector): void {
 
         // if sleeping, the entity will not wake up
-        if (!this.todoState.sleep) {
+        if (!this.todoState.sleep && !this.todoState.beingChase) {
             
             this.pq.queue({
                 priority: 0,
@@ -247,7 +276,7 @@ export abstract class LivingEntity extends Entity {
             
             this.state.beingChaseVecsBuffer.push(vector);
         }
-
+        this.state.beingChaseVecsBuffer.push(vector);
     }
 
     protected _moveTo(position: IPosition): void {
@@ -393,7 +422,8 @@ export abstract class LivingEntity extends Entity {
             this.wanderFrameCount = 0;
         }
         this._moveInDir(this.wanderDirection);
-        this.hungry -= this.hungryRate;
+        this.hungry = Math.max(this.hungry - this.hungryRate, 0);
+        this.energy = Math.max(this.energy - this.energyRate, 0);
     }
 
 }
