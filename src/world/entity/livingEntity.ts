@@ -46,11 +46,11 @@ export abstract class LivingEntity extends Entity {
         super(type, position, parentContainer, container);
     
         this.container.classList.add('living-entity');
-        this.sightRange = 300;
+        this.sightRange = 500;
         
         switch(type) {
             case LivingType.RABBIT:
-                this.speed = 0.1;
+                this.speed = 0.2;
                 this.hungryRate = 1;
                 break;
             case LivingType.HUMAN:
