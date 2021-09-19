@@ -35,10 +35,6 @@ export class GameInterface {
 
         // listen to the emitter
         ToolList.onCreateEntity((event: ICreateEntityEvent) => {
-            // debug
-            console.log(event.position.x);
-            console.log(event.position.y);
-            
             this.world.createEntity(event.position, event.type);
         });
 
