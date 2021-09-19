@@ -26,6 +26,7 @@ export enum TodoType {
     HUNGRY,
     SLEEP,
     BEING_CHASE,
+    REPRODUCE,
 }
 
 interface IPQItems {
@@ -56,6 +57,7 @@ export abstract class LivingEntity extends Entity {
         hungry: false,
         sleep: false,
         beingChase: false,
+        reproduce: false,
     };
 
     protected readonly state = {
@@ -158,7 +160,6 @@ export abstract class LivingEntity extends Entity {
         this.energy = Math.max(this.energy + this.energyRate, 100);
         this.health = Math.max(this.health + this.healthRestoreRate, 100);
         this.hungry = Math.min(this.hungry - this.hungryRate * 0.3, 0);
-
         
         if (this.energy > 80) {
             this.pq.dequeue();
@@ -263,12 +264,12 @@ export abstract class LivingEntity extends Entity {
         let yPos = position.y;
         if (xPos < 15) xPos = 15;
         if (yPos < 15) yPos = 15;
-        if (xPos > window.screen.height - 15) xPos = window.screen.height - 15;
+        if (xPos > window.screen.width - 15) xPos = window.screen.width - 15;
         if (yPos > window.screen.height - 15) yPos = window.screen.height - 15;
-        this.container.style.left = position.x + 'px';
-        this.container.style.top = position.y + 'px';
-        this.position.x = position.x;
-        this.position.y = position.y;
+        this.container.style.left = xPos + 'px';
+        this.container.style.top = yPos + 'px';
+        this.position.x = xPos;
+        this.position.y = yPos;
     }
 
     protected _moveInDir(vec: IVector): void {
