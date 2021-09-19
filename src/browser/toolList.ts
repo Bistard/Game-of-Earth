@@ -109,15 +109,15 @@ export class ToolList {
 
         });
 
-        const cloud = new Button('cloud-create-button', staticContainer);
-        cloud.setImage('../../src/assets/cloud.png');
-        cloud.setImageClass(['tool-button-img']);
-        cloud.element.domNode.classList.add('tool-button', 'button');
-        cloud.addEventListener('click', (ev: MouseEvent) => {
+        // const cloud = new Button('cloud-create-button', staticContainer);
+        // cloud.setImage('../../src/assets/cloud.png');
+        // cloud.setImageClass(['tool-button-img']);
+        // cloud.element.domNode.classList.add('tool-button', 'button');
+        // cloud.addEventListener('click', (ev: MouseEvent) => {
             
-            ToolList.updateCursor(StaticType.CLOUD);
+        //     ToolList.updateCursor(StaticType.CLOUD);
 
-        });
+        // });
         
     }
 

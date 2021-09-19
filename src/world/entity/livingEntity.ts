@@ -99,8 +99,12 @@ export abstract class LivingEntity extends Entity {
                 this.energyRate = 0.03 + 0.02*Math.random();
 =======
                 this.hungryRate = 0.02;
+<<<<<<< HEAD
                 this.energyRate = 3;
 >>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
+=======
+                this.energyRate = 0.05;
+>>>>>>> origin/master
                 break;
             case LivingType.HUMAN:
                 this.speed = 0.5;
@@ -110,8 +114,12 @@ export abstract class LivingEntity extends Entity {
                 this.energyRate = 0.02 + 0.03*Math.random();
 =======
                 this.hungryRate = 0.03;
+<<<<<<< HEAD
                 this.energyRate = 3;
 >>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
+=======
+                this.energyRate = 0.05;
+>>>>>>> origin/master
                 break;
             case LivingType.WOLF:
                 this.speed = 0.6;
@@ -121,8 +129,12 @@ export abstract class LivingEntity extends Entity {
                 this.energyRate = 0.03 + 0.02*Math.random();
 =======
                 this.hungryRate = 0.03;
+<<<<<<< HEAD
                 this.energyRate = 3;
 >>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
+=======
+                this.energyRate = 0.05;
+>>>>>>> origin/master
                 break;
             case LivingType.BEAR:
                 this.speed = 0.4;
@@ -132,8 +144,12 @@ export abstract class LivingEntity extends Entity {
                 this.energyRate = 0.02 + 0.03*Math.random();
 =======
                 this.hungryRate = 0.03;
+<<<<<<< HEAD
                 this.energyRate = 3;
 >>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
+=======
+                this.energyRate = 0.05;
+>>>>>>> origin/master
                 break;
         }
 
@@ -202,12 +218,14 @@ export abstract class LivingEntity extends Entity {
         
         if (this.energy > 80) {
             this.pq.dequeue();
+            this.todoState.sleep = false;
         }
         
     }
 
     protected _onBeingChase(): void {
         if(this.state.beingChaseVecsBuffer.length == 0) { //not being chased anymore
+            console.log('dequing onBeingChase');
             this.pq.dequeue();
             this.todoState.beingChase = false;
             return;
@@ -229,6 +247,7 @@ export abstract class LivingEntity extends Entity {
         Entity.removeEntity(entity);
         this.hungry = 100;
         this.todoState.hungry = false;
+        console.log('dequing onEat');
         this.pq.dequeue();
     }
 
