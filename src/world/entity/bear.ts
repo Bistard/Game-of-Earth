@@ -12,7 +12,6 @@ import { ISurroundEntities } from "./options.js";
 export class Bear extends LivingEntity {
 
     private readonly eatHumanProb = 0.3;
-    private readonly eatWolfThres = 70;
     private readonly eatHumanThres = 30;
 
     constructor(parentContainer: HTMLElement, position: IPosition) {
@@ -33,32 +32,30 @@ export class Bear extends LivingEntity {
         if (this.hungry < this.eatHumanThres) {
             if (wolf.length > 0 && human.length > 0) {
                 if (Math.random() < this.eatHumanProb) {
-                    this._chase(closestHuman!);
+                    this._eatOrChase(closestHuman!);
                 } else {
-                    this._chase(closestWolf!);
+                    this._eatOrChase(closestWolf!);
                 }
             } else if (wolf.length > 0) {
-                this.speedrate = SpeedRate.FAST;
-                this._chase(closestWolf!);
+                this.speedrate = SpeedRate.VERY_FAST;
+                this._eatOrChase(closestWolf!);
             } else if (human.length > 0) {
-                this.speedrate = SpeedRate.FAST
-                this._chase(closestHuman!);
-            } else {
-                this.speedrate = SpeedRate.NORMAL;
-                this._wander();
-            }
-        } else if (this.hungry < this.eatWolfThres) {
-            if (wolf.length > 0) {
-                this.speedrate = SpeedRate.FAST;
-                this._chase(closestWolf!);
+                this.speedrate = SpeedRate.VERY_FAST
+                this._eatOrChase(closestHuman!);
             } else {
                 this.speedrate = SpeedRate.NORMAL;
                 this._wander();
             }
         } else {
-            this.speedrate = SpeedRate.VERY_SLOW;
-            this._wander();
+            if (wolf.length > 0) {
+                this.speedrate = SpeedRate.FAST;
+                this._eatOrChase(closestWolf!);
+            } else {
+                this.speedrate = SpeedRate.NORMAL;
+                this._wander();
+            }
         }
+        this._ifDie();
     }
 
     protected override _render(): void {
