@@ -94,62 +94,26 @@ export abstract class LivingEntity extends Entity {
             case LivingType.RABBIT:
                 this.speed = 0.4;
                 this.healthRestoreRate = 0.05;
-<<<<<<< HEAD
                 this.hungryRate = 0.01 + 0.01*Math.random();
                 this.energyRate = 0.03 + 0.02*Math.random();
-=======
-                this.hungryRate = 0.02;
-<<<<<<< HEAD
-                this.energyRate = 3;
->>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
-=======
-                this.energyRate = 0.05;
->>>>>>> origin/master
                 break;
             case LivingType.HUMAN:
                 this.speed = 0.5;
                 this.healthRestoreRate = 0.05;
-<<<<<<< HEAD
                 this.hungryRate = 0.01 + 0.02*Math.random();
                 this.energyRate = 0.02 + 0.03*Math.random();
-=======
-                this.hungryRate = 0.03;
-<<<<<<< HEAD
-                this.energyRate = 3;
->>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
-=======
-                this.energyRate = 0.05;
->>>>>>> origin/master
                 break;
             case LivingType.WOLF:
                 this.speed = 0.6;
                 this.healthRestoreRate = 0.05;
-<<<<<<< HEAD
                 this.hungryRate = 0.02 + 0.01*Math.random();
                 this.energyRate = 0.03 + 0.02*Math.random();
-=======
-                this.hungryRate = 0.03;
-<<<<<<< HEAD
-                this.energyRate = 3;
->>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
-=======
-                this.energyRate = 0.05;
->>>>>>> origin/master
                 break;
             case LivingType.BEAR:
                 this.speed = 0.4;
                 this.healthRestoreRate = 0.05;
-<<<<<<< HEAD
                 this.hungryRate = 0.02 + 0.01*Math.random();
                 this.energyRate = 0.02 + 0.03*Math.random();
-=======
-                this.hungryRate = 0.03;
-<<<<<<< HEAD
-                this.energyRate = 3;
->>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
-=======
-                this.energyRate = 0.05;
->>>>>>> origin/master
                 break;
         }
 
