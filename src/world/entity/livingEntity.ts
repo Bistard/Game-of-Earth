@@ -68,7 +68,7 @@ export abstract class LivingEntity extends Entity {
 
     }
 
-    protected eat(entity: Entity): void {
+    protected _eat(entity: Entity): void {
         for(let i = 0; i < World.entities.length; i++){
             if (World.entities[i] == entity) {
                 World.entities.splice(i, 1);
