@@ -21,15 +21,22 @@
 }
 
 #tool-list {
-    position: absolute;
-    right: 0px;
-    top: 0px;
+
+    z-index: 100;
+
+    position: relative;
+    float: right;
+    margin: 5px;
 
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     
-    width: 40px;
+    width: 80px;
     height: auto;
+
+    border-radius: 10px;
+
+    background-color: lightgrey;
 }
 
 #living-tool-list {
@@ -49,8 +56,29 @@
     width: 30px;
     height: 30px;
 
-    margin: 5px;
+    margin: 5px;    
+}
 
-    background-color: aqua;
+.tool-button-img {
+    width: 30px;
+    height: 30px;
+}
+
+#entity-name-tag {
+
+    z-index: 100;
+
+    position: absolute;
+
+    width: auto;
+    height: 30px;
     
+    padding: 10px;
+    line-height: 30px;
+    font-size: 30px;
+    border-radius: 10px;
+
+    user-select: none;
+    background-color: lightgrey;
+    color: black;
 }

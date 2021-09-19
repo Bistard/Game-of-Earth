@@ -402,6 +402,7 @@ export abstract class LivingEntity extends Entity {
             this.wanderFrameCount = 0;
         }
         this._moveInDir(this.wanderDirection);
+        // this.hungry -= this.hungryRate;
     }
 
 }
