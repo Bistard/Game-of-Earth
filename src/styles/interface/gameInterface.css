@@ -5,3 +5,17 @@
     background-color: whitesmoke;
     overflow: hidden;
 }
+
+#current-time {
+
+    position: absolute;
+    font-weight: bold;
+
+    left: 5px;
+    top: 5px;
+
+    width: auto;
+    height: 16px;
+    line-height: 16px;
+
+}
