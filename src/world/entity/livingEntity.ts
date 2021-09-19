@@ -113,8 +113,6 @@ export abstract class LivingEntity extends Entity {
             this.todoState.sleep = true;
         }
 
-
-
         this._update();
     }
 
@@ -183,7 +181,7 @@ export abstract class LivingEntity extends Entity {
             this.pq.dequeue();
         } else {
             // case when the grass is outside eat range
-            this._chaseTo(entity);
+            this._chase(entity);
             this.hungry -= this.hungryRate;
         }
     }
@@ -346,7 +344,7 @@ export abstract class LivingEntity extends Entity {
         this._moveInDir(this.wanderDirection);
     }
 
-    protected _chaseTo(entity: Entity): void {
+    protected _chase(entity: Entity): void {
         const s = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (entity.position.x - this.position.x);
         const dy = s * (entity.position.y - this.position.y);

@@ -33,16 +33,16 @@ export class Bear extends LivingEntity {
         if (this.hungry < this.eatHumanThres) {
             if (wolf.length > 0 && human.length > 0) {
                 if (Math.random() < this.eatHumanProb) {
-                    this._chaseTo(closestHuman!);
+                    this._chase(closestHuman!);
                 } else {
-                    this._chaseTo(closestWolf!);
+                    this._chase(closestWolf!);
                 }
             } else if (wolf.length > 0) {
                 this.speedrate = SpeedRate.FAST;
-                this._chaseTo(closestWolf!);
+                this._chase(closestWolf!);
             } else if (human.length > 0) {
                 this.speedrate = SpeedRate.FAST
-                this._chaseTo(closestHuman!);
+                this._chase(closestHuman!);
             } else {
                 this.speedrate = SpeedRate.NORMAL;
                 this._wander();
@@ -50,7 +50,7 @@ export class Bear extends LivingEntity {
         } else if (this.hungry < this.eatWolfThres) {
             if (wolf.length > 0) {
                 this.speedrate = SpeedRate.FAST;
-                this._chaseTo(closestWolf!);
+                this._chase(closestWolf!);
             } else {
                 this.speedrate = SpeedRate.NORMAL;
                 this._wander();
