@@ -11,47 +11,40 @@ export class Rabbit extends LivingEntity {
         this._render();
     }
 
-    protected override _update(): void {
-        if (this.pq.length == 0) {
-            this.randomMove();
-            this.hungry -= this.hungryRate;
-            if(this.hungry == 0){
-                Entity.removeEntity(this);
-            }
-            return;
-        }
-        const todo = this.pq.dequeue();
-        switch(todo.item) {
-            case TodoType.HUNGRY:
-                const surroundings = this._checkSurroundEntity();
-                // find grass inside sightrange
-                for (let entity of surroundings) {
-                    if (entity.type == StaticType.GRASS) {
-                        const distance = calcDistance(this.position, entity.position);
-                        if(distance < this.actionRange) {
-                            // case when the grass is inside eat range
-                            this._eat(entity);
-                            this.hungry = 100;
-                            // TODO: No specific plan on the number so far
-                        } else {
-                            // case when the grass is outside eat range
-                            this._chaseTo(entity);
-                            this.hungry -= this.hungryRate;
-                            this.pq.queue(todo);
-                        }
-                        return;
-                    }
+    protected override _onHungry(): void {
+       
+        const surroundings = this._checkSurroundEntity();
+        // find grass inside sightrange
+        for (let e of surroundings) {
+            if (e.type == StaticType.GRASS) {
+                const distance = calcDistance(this.position, e.position);
+                if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
+                    // case when the grass is inside eat range
+                    this._eat(e.id);
+                    this.hungry = 100;
+                    // TODO: No specific plan on the number so far
+                } else {
+                    // case when the grass is outside eat range
+                    this._chaseTo(e);
+                    this.hungry -= this.hungryRate;
+                    this.pq.queue({priority: 2, item: TodoType.HUNGRY});
                 }
-                // no grass inside sightrange, continue randomMove
-                this.hungry -= this.hungryRate;
-                if(this.hungry < 0) {
-                    Entity.removeEntity(this);
+                return;
+            }
+        }
+        // no grass inside sightrange, continue randomMove
+        this.hungry -= this.hungryRate;
+        if(this.hungry == 0){
+            for(let i = 0; i < World.entities.length; i++){
+                if (World.entities[i] == this) {
+                    this.parentContainer.removeChild(this.container);
+                    console.log(World.entities.splice(i, 1));
                     return;
                 }
-                this.randomMove();
-                this.pq.queue(todo);
-                break;
+            }
         }
+        this.randomMove();
+        this.pq.queue({priority: 2, item: TodoType.HUNGRY});
     }
 
     protected override _render(): void {
