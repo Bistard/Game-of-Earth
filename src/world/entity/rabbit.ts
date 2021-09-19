@@ -18,7 +18,8 @@ export class Rabbit extends LivingEntity {
             if(this.hungry == 0){
                 for(let i = 0; i < World.entities.length; i++){
                     if (World.entities[i] == this) {
-                        World.entities.splice(i, 1);
+                        this.parentContainer.removeChild(this.container);
+                        console.log(World.entities.splice(i, 1));
                         break;
                     }
                 }
@@ -49,6 +50,15 @@ export class Rabbit extends LivingEntity {
                 }
                 // no grass inside sightrange, continue randomMove
                 this.hungry -= this.hungryRate;
+                if(this.hungry == 0){
+                    for(let i = 0; i < World.entities.length; i++){
+                        if (World.entities[i] == this) {
+                            this.parentContainer.removeChild(this.container);
+                            console.log(World.entities.splice(i, 1));
+                            return;
+                        }
+                    }
+                }
                 this.randomMove();
                 this.pq.queue(todo);
                 break;
@@ -63,17 +73,17 @@ export class Rabbit extends LivingEntity {
     }
 
     private randomMove(): void {
-        const dx = this.speed * Math.random();
-        const dy = Math.sqrt(this.speed^2 - dx^2);
+        let dx = this.speed * Math.random();
+        let dy = Math.sqrt(this.speed^2 - dx^2);
         if (Math.random() >= 0.5) {
-            this.position.x += dx;
-        } else {
-            this.position.x -= dx;
+            dx *= -1;
         }
         if (Math.random() >= 0.5) {
-            this.position.y += dy;
-        } else {
-            this.position.y -= dy;
-        }
+            dy *= -1;
+        } 
+        this._moveTo({
+            x: this.position.x + dx,
+            y: this.position.y + dy
+        })
     }
 }
