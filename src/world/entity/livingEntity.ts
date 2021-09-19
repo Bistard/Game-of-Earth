@@ -6,11 +6,11 @@ import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
 import { Bear } from "./bear.js";
 import { Cloud } from "./cloud.js";
-import { Entity, LivingType } from "./entity.js";
+import { Entity, LivingType, StaticType } from "./entity.js";
 import { Forest } from "./forest.js";
 import { Grass } from "./grass.js";
 import { Human } from "./human.js";
-import { ICheckSurroundOptions, ISurroundEntities } from "./options.js";
+import { ISurroundEntities } from "./options.js";
 import { Rabbit } from "./rabbit.js";
 import { Wolf } from "./wolf.js";
 
@@ -34,7 +34,7 @@ interface IPQItems {
 }
 
 export interface BeingChasedEvent {
-    
+
 }
 
 export abstract class LivingEntity extends Entity {
@@ -69,8 +69,8 @@ export abstract class LivingEntity extends Entity {
 
         this.container.classList.add('living-entity');
         this.sightRange = 500;
-        
-        switch(type) {
+
+        switch (type) {
             case LivingType.RABBIT:
                 this.speed = 0.4;
                 this.hungryRate = 1;
@@ -135,38 +135,107 @@ export abstract class LivingEntity extends Entity {
     protected _checkSurroundEntity(): ISurroundEntities {
 
         let shortest: {
-            human: Human,
-            rabbit: Rabbit,
-            wolf: Wolf,
-            bear: Bear,
-            grass: Grass,
-            cloud: Cloud,
-            forest: Forest,
-        };
+            human?: Human | undefined,
+            rabbit?: Rabbit | undefined,
+            wolf?: Wolf | undefined,
+            bear?: Bear | undefined,
+            grass?: Grass | undefined,
+            cloud?: Cloud | undefined,
+            forest?: Forest | undefined,
+        } = {};
 
-        const entities = {
-            human: [],
-            rabbit: [],
-            wolf: [],
-            bear: [],
-            grass: [],
-            cloud: [],
-            forest: [],
+        let shortestDist: {
+            minHuman?: number | undefined,
+            minRabbit?: number | undefined,
+            minWolf?: number | undefined,
+            minBear?: number | undefined,
+            minGrass?: number | undefined,
+            minCloud?: number | undefined,
+            minForest?: number | undefined,
+        } = {};
+
+        let entities = {
+            human: [] as Human[],
+            rabbit: [] as Rabbit[],
+            wolf: [] as Wolf[],
+            bear: [] as Bear[],
+            grass: [] as Grass[],
+            cloud: [] as Cloud[],
+            forest: [] as Forest[],
         };
 
         const length = World.entities.length;
         for (let i = 0; i < length; i++) {
             const otherEntity = World.entities[i]!;
-            if (this === otherEntity || filter(otherEntity) === false) {
+            if (this === otherEntity) {
                 continue;
             }
 
             const distance = calcDistance(this.position, otherEntity.position);
             if (distance <= this.sightRange) {
-                // entities.push(otherEntity);
+                switch (otherEntity.type) {
+                    case LivingType.HUMAN:
+                        if (!shortest.human || distance < shortestDist.minHuman!) {
+                            shortest.human = otherEntity as Human;
+                            shortestDist.minHuman = distance;
+                        }
+                        entities.human.push(otherEntity as Human);
+                        break;
+                    
+                    case LivingType.BEAR:
+                        if (!shortest.bear || distance < shortestDist.minBear!) {
+                            shortest.bear = otherEntity as Bear;
+                            shortestDist.minBear = distance;
+                        }
+                        entities.bear.push(otherEntity as Bear);
+                        break;
+                    
+                    case LivingType.RABBIT:
+                        if (!shortest.rabbit || distance < shortestDist.minRabbit!) {
+                            shortest.rabbit = otherEntity as Rabbit;
+                            shortestDist.minRabbit = distance;
+                        }
+                        entities.rabbit.push(otherEntity as Rabbit);
+                        break;
+
+                    case LivingType.WOLF:
+                        if (!shortest.wolf || distance < shortestDist.minWolf!) {
+                            shortest.wolf = otherEntity as Wolf;
+                            shortestDist.minWolf = distance;
+                        }
+                        entities.wolf.push(otherEntity as Wolf);
+                        break;
+
+                    case StaticType.CLOUD:
+                        if (!shortest.cloud || distance < shortestDist.minCloud!) {
+                            shortest.cloud = otherEntity as Cloud;
+                            shortestDist.minCloud = distance;
+                        }
+                        entities.cloud.push(otherEntity as Cloud);
+                        break;
+
+                    case StaticType.FOREST:
+                        if (!shortest.forest || distance < shortestDist.minForest!) {
+                            shortest.forest = otherEntity as Forest;
+                            shortestDist.minForest = distance;
+                        }
+                        entities.forest.push(otherEntity as Forest);
+                        break;
+
+                    case StaticType.GRASS:
+                        if (!shortest.grass || distance < shortestDist.minGrass!) {
+                            shortest.grass = otherEntity as Grass;
+                            shortestDist.minGrass = distance;
+                        }
+                        entities.grass.push(otherEntity as Grass);
+                        break;
+
+                }
             }
         }
-        
+
+        return {shortest: shortest, surround: entities};
+
         // return entities;
     }
 
@@ -176,7 +245,7 @@ export abstract class LivingEntity extends Entity {
         if (this.wanderFrameCount > (180 - Math.random() * 120)) {
             let xWeight = Math.random() * 10;
             let yWeight = Math.random() * 10;
-            let diagLength = Math.sqrt(xWeight**2 + yWeight**2);
+            let diagLength = Math.sqrt(xWeight ** 2 + yWeight ** 2);
             let dx = (xWeight / diagLength) * this.speed * this.speedrate;
             let dy = (yWeight / diagLength) * this.speed * this.speedrate;
             if (Math.random() >= 0.5) {

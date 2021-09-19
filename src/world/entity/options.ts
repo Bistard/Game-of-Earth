@@ -7,20 +7,6 @@ import { Human } from "./human.js";
 import { Rabbit } from "./rabbit.js";
 import { Wolf } from "./wolf.js";
 
-export interface ICheckSurroundOptions {
-
-    /**
-     * if return the closest entity
-     */
-    shortest: boolean,
-
-    /**
-     * determine which entity is need to be filtered
-     */
-    filter: (entities: EntityType[]) => boolean,
-    
-}
-
 export interface ISurroundEntities {
 
     shortest?: {
