@@ -1,9 +1,18 @@
 
+import { Emitter } from "../../common/event.js";
 import { IPosition, IVector } from "../../common/UI/domNode.js";
-import { calcDistance, getDiagLength } from "../../common/utils/math.js";
+import { calcDistance } from "../../common/utils/math.js";
 import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
+import { Bear } from "./bear.js";
+import { Cloud } from "./cloud.js";
 import { Entity, LivingType } from "./entity.js";
+import { Forest } from "./forest.js";
+import { Grass } from "./grass.js";
+import { Human } from "./human.js";
+import { ICheckSurroundOptions, ISurroundEntities } from "./options.js";
+import { Rabbit } from "./rabbit.js";
+import { Wolf } from "./wolf.js";
 
 export enum SpeedRate {
     VERY_SLOW = 0.5,
@@ -24,6 +33,10 @@ interface IPQItems {
     item: TodoType;
 }
 
+export interface BeingChasedEvent {
+    
+}
+
 export abstract class LivingEntity extends Entity {
 
     public health: number = 100;
@@ -40,6 +53,9 @@ export abstract class LivingEntity extends Entity {
     private wanderFrameCount = 0;
     protected wanderDirection: IVector = { dx: 0, dy: 0 };
 
+    // being chased
+    private static _onCreateEntity = new Emitter<BeingChasedEvent>();
+    public static onCreateEntity = LivingEntity._onCreateEntity.event;
 
     protected readonly pq: PriorityQueue<IPQItems>
         = new PriorityQueue({
@@ -116,24 +132,42 @@ export abstract class LivingEntity extends Entity {
         this._moveTo({ x: this.position.x + vec.dx, y: this.position.y + vec.dy });
     }
 
-    protected _checkSurroundEntity(): Entity[] {
+    protected _checkSurroundEntity(): ISurroundEntities {
 
-        const entities: Entity[] = [];
+        let shortest: {
+            human: Human,
+            rabbit: Rabbit,
+            wolf: Wolf,
+            bear: Bear,
+            grass: Grass,
+            cloud: Cloud,
+            forest: Forest,
+        };
+
+        const entities = {
+            human: [],
+            rabbit: [],
+            wolf: [],
+            bear: [],
+            grass: [],
+            cloud: [],
+            forest: [],
+        };
 
         const length = World.entities.length;
         for (let i = 0; i < length; i++) {
             const otherEntity = World.entities[i]!;
-            if (this === otherEntity) {
+            if (this === otherEntity || filter(otherEntity) === false) {
                 continue;
             }
 
             const distance = calcDistance(this.position, otherEntity.position);
             if (distance <= this.sightRange) {
-                entities.push(otherEntity);
+                // entities.push(otherEntity);
             }
         }
-
-        return entities;
+        
+        // return entities;
     }
 
     protected _wander(): void {
