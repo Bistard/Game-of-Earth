@@ -1,12 +1,31 @@
+import { IVector } from "../../world/entity/livingEntity.js";
 import { IPosition } from "../UI/domNode.js";
 
 export function calcDistance(pos1: IPosition, pos2: IPosition): number {
-    return Math.sqrt((pos1.x - pos2.x)^2 + (pos1.y - pos2.y)^2);
+    return Math.sqrt((pos1.x - pos2.x) ^ 2 + (pos1.y - pos2.y) ^ 2);
 }
 
-export function getUnitVec(from: IPosition, target: IPosition) : [number, number] {
+/**
+ * Returns the unit vector of length 1 pointing from (from) to (target).
+ */
+export function getUnitVec(from: IPosition, target: IPosition): IVector {
     let deltaX = target.x - from.x;
     let deltaY = target.y - from.y;
     let distance = calcDistance(from, target);
-    return [deltaX/distance, deltaY/distance];
+    return { dx: deltaX / distance, dy: deltaY / distance };
+}
+
+/**
+ * Returns the unit vector of length 1 representing the sum of the IVector Array
+ * Intended for when there are multiple preys insight, and deciding the direction of movement
+ */
+export function getEscapeVec(runDirection: IVector[]): IVector {
+    let deltaX: number = 0;
+    let deltaY: number = 0;
+    for (let i = 0; i < runDirection.length; i++) {
+        deltaX += runDirection[i]!.dx;
+        deltaY += runDirection[i]!.dx;
+    }
+    let normCoeff = calcDistance({ x: 0, y: 0 }, { x: deltaX, y: deltaY });
+    return { dx: deltaX / normCoeff, dy: deltaY / normCoeff };
 }
