@@ -1,8 +1,12 @@
-import { IVector } from "../../world/entity/livingEntity.js";
-import { IPosition } from "../UI/domNode.js";
+
+import { IPosition, IVector } from "../UI/domNode.js";
 
 export function calcDistance(pos1: IPosition, pos2: IPosition): number {
-    return Math.sqrt((pos1.x - pos2.x) ^ 2 + (pos1.y - pos2.y) ^ 2);
+    return Math.sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2);
+}
+
+export function getDiagLength(a: number, b: number) : number{
+    return Math.sqrt(a**2 + b**2)
 }
 
 /**

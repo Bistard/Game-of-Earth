@@ -1,6 +1,6 @@
 
-import { IPosition } from "../../common/UI/domNode.js";
-import { calcDistance } from "../../common/utils/math.js";
+import { IPosition, IVector } from "../../common/UI/domNode.js";
+import { calcDistance, getDiagLength } from "../../common/utils/math.js";
 import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
 import { Entity, LivingType } from "./entity.js";
@@ -35,36 +35,39 @@ export abstract class LivingEntity extends Entity {
     public readonly hungryRate: number;
     public readonly sightRange: number;
 
-    public wandering: boolean = false;
+    protected wandering: boolean = false;
+    private wanderFrameCount = 0;
+    protected wanderDirection: IVector = { dx: 0, dy: 0 };
+
 
     protected readonly pq: PriorityQueue<IPQItems>
         = new PriorityQueue({
-            comparator: (a: IPQItems, b:IPQItems) => {
+            comparator: (a: IPQItems, b: IPQItems) => {
                 return a.priority - b.priority;
             }
         });
 
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
-    
+
         this.container.classList.add('living-entity');
         this.sightRange = 300;
 
         switch (type) {
             case LivingType.RABBIT:
-                this.speed = 0.2;
+                this.speed = 0.4;
                 this.hungryRate = 1;
                 break;
             case LivingType.HUMAN:
-                this.speed = 0.25;
+                this.speed = 0.5;
                 this.hungryRate = 2;
                 break;
             case LivingType.WOLF:
-                this.speed = 0.3;
+                this.speed = 0.6;
                 this.hungryRate = 3;
                 break;
             case LivingType.BEAR:
-                this.speed = 0.2;
+                this.speed = 0.4;
                 this.hungryRate = 4;
                 break;
         }
@@ -72,7 +75,7 @@ export abstract class LivingEntity extends Entity {
     }
 
     protected _eat(entity: number): void {
-        for(let i = 0; i < World.entities.length; i++) {
+        for (let i = 0; i < World.entities.length; i++) {
             if (World.entities[i]!.id == entity) {
                 World.entities.splice(i, 1);
                 break;
@@ -91,10 +94,10 @@ export abstract class LivingEntity extends Entity {
                 item: TodoType.HUNGRY
             })
         }
-        
+
 
         this._update();
-        
+
     }
 
     protected abstract _update(): void;
@@ -110,6 +113,10 @@ export abstract class LivingEntity extends Entity {
         this.container.style.top = position.y + 'px';
         this.position.x = position.x;
         this.position.y = position.y;
+    }
+
+    protected _moveInDir(vec: IVector): void {
+        this._moveTo({ x: this.position.x + vec.dx, y: this.position.y + vec.dy });
     }
 
     protected _checkSurroundEntity(): Entity[] {
@@ -134,27 +141,41 @@ export abstract class LivingEntity extends Entity {
 
     protected _wander(): void {
         this.wandering = true;
-        const dx = this.speed * this.speedrate * (Math.random() - 0.5) * 2;
-        const dy = Math.sqrt((this.speed*this.speedrate)^2 - dx^2);
-        this._moveTo({ x: this.position.x + dx, y: this.position.y + dy });
+        this.wanderFrameCount++;
+        if (this.wanderFrameCount > (180 - Math.random() * 120)) {
+            let xWeight = Math.random() * 10;
+            let yWeight = Math.random() * 10;
+            let diagLength = Math.sqrt(xWeight**2 + yWeight**2);
+            let dx = (xWeight / diagLength) * this.speed * this.speedrate;
+            let dy = (yWeight / diagLength) * this.speed * this.speedrate;
+            if (Math.random() >= 0.5) {
+                dx *= -1;
+            }
+            if (Math.random() >= 0.5) {
+                dy *= -1;
+            }
+            this.wanderDirection = { dx: dx, dy: dy };
+            this.wanderFrameCount = 0;
+        }
+        this._moveInDir(this.wanderDirection);
     }
 
-    protected _chaseTo(entity: Entity):void {
-        const s  = this.speed / calcDistance(this.position, entity.position);
+    protected _chaseTo(entity: Entity): void {
+        const s = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (entity.position.x - this.position.x);
         const dy = s * (entity.position.y - this.position.y);
         this._moveTo({
-            x: this.position.x + dx, 
+            x: this.position.x + dx,
             y: this.position.y + dy
         });
     }
 
-    protected _runAwayFrom(entity: Entity):void {
-        const s  = this.speed / calcDistance(this.position, entity.position);
+    protected _runAwayFrom(entity: Entity): void {
+        const s = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (this.position.x - entity.position.x);
         const dy = s * (this.position.y - entity.position.y);
         this._moveTo({
-            x: this.position.x + dx, 
+            x: this.position.x + dx,
             y: this.position.y + dy
         });
     }
