@@ -117,7 +117,7 @@ export abstract class LivingEntity extends Entity {
         this.position.y = position.y;
     }
 
-    protected _checkSurroundEntity(filter: (e: Entity) => boolean, opts: ICheckSurroundOptions): ISurroundEntities {
+    protected _checkSurroundEntity(opts?: ICheckSurroundOptions): ISurroundEntities {
 
         let shortest: {
             human: Human,
