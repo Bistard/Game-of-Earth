@@ -24,8 +24,8 @@ export enum SpeedRate {
 
 export enum TodoType {
     HUNGRY,
-    TIRE,
-    RUN
+    OUT_OF_ENERGY,
+    RUN_AWAY,
 }
 
 interface IPQItems {
@@ -46,6 +46,7 @@ export abstract class LivingEntity extends Entity {
     public readonly speed: number;
     public speedrate: number = 1;
     public readonly hungryRate: number;
+    public readonly energyRate: number;
     public readonly sightRange: number;
     public readonly actionRange: number = Math.max(this.dimension.height, this.dimension.width) / 2;
 
@@ -74,18 +75,22 @@ export abstract class LivingEntity extends Entity {
             case LivingType.RABBIT:
                 this.speed = 0.4;
                 this.hungryRate = 1;
+                this.energyRate = 0.05;
                 break;
             case LivingType.HUMAN:
                 this.speed = 0.5;
                 this.hungryRate = 2;
+                this.energyRate = 0.05;
                 break;
             case LivingType.WOLF:
                 this.speed = 0.6;
                 this.hungryRate = 3;
+                this.energyRate = 0.05;
                 break;
             case LivingType.BEAR:
                 this.speed = 0.4;
                 this.hungryRate = 4;
+                this.energyRate = 0.05;
                 break;
         }
 
@@ -98,9 +103,7 @@ export abstract class LivingEntity extends Entity {
 
     public override update(): void {
 
-        // region
-        // manipulation ot pq
-        // endregion
+        // detect if hungry
         if (this.hungry < 40) {
             this.pq.queue({
                 priority: 2,
@@ -108,12 +111,67 @@ export abstract class LivingEntity extends Entity {
             })
         }
 
+        // detect if energy running out
+        if (this.energy < 30) {
+            this.pq.queue({
+                priority: 1,
+                item: TodoType.OUT_OF_ENERGY
+            })
+        }
 
         this._update();
-
     }
 
-    protected abstract _update(): void;
+    private _update(): void {
+
+        if (this.pq.length == 0) {
+            // this._wander();
+            this.hungry -= this.hungryRate;
+            if (this.hungry == 0) {
+                for(let i = 0; i < World.entities.length; i++) {
+                    if (World.entities[i] == this) {
+                        this.parentContainer.removeChild(this.container);
+                        console.log(World.entities.splice(i, 1));
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+
+        const todo = this.pq.dequeue();
+        switch(todo.item) {
+            case TodoType.HUNGRY:
+                this._onHungry();
+                break;
+            case TodoType.OUT_OF_ENERGY:
+                this._onRunningOutOfEnergy();
+                break;
+            case TodoType.RUN_AWAY:
+                this._onRunAway();
+                break;
+        }
+    }
+
+    /***************************************************************************
+     * methods for specific livingEntity to override
+     **************************************************************************/
+
+    protected abstract _onHungry(): void;
+
+    protected _onRunningOutOfEnergy(): void {
+        // common method on dealing with running out of energy
+        // stopped and starting restoring energy
+        this.energy += this.energyRate;
+    }
+
+    protected _onRunAway(): void {
+        // triggered when other entities are chasing 'me'
+    }
+
+    /***************************************************************************
+     * methods for specific livingEntity to override (end)
+     **************************************************************************/
 
     protected _moveTo(position: IPosition): void {
         let xPos = position.x;
