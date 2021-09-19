@@ -90,7 +90,7 @@ export class World {
         } 
         
         for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE - 2; i++) {
-            initEntityCounts[i] = Math.floor((initEntityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT * 0.5 + 0.5);
+            initEntityCounts[i] = Math.floor((initEntityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT * 0.3 + 0.5);
         }
 
         const instantiations = [Human, Rabbit, Wolf, Bear, Cloud];
@@ -105,11 +105,11 @@ export class World {
 
         }
 
-        for (let i = 0; i < World.INIT_TOTAL_ENTITY_COUNT * 0.3; i++) {
+        for (let i = 0; i < World.INIT_TOTAL_ENTITY_COUNT * 0.4; i++) {
             this.createRandomEntity(Grass, StaticType.GRASS);
         }
 
-        for (let i = 0; i < World.INIT_TOTAL_ENTITY_COUNT * 0.2; i++) {
+        for (let i = 0; i < World.INIT_TOTAL_ENTITY_COUNT * 0.3; i++) {
             this.createRandomEntity(Forest, StaticType.FOREST);
         }
     }
