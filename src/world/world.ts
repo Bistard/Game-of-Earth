@@ -110,7 +110,29 @@ export class World {
     }
 
     public createEntity(position: IPosition, type: EntityType): void {
-        // do stuff here
+        switch (type) {
+            case LivingType.HUMAN:
+                new Human(this._parentContainer, position);
+                break;
+            case LivingType.RABBIT:
+                new Rabbit(this._parentContainer, position);
+                break;
+            case LivingType.WOLF:
+                new Wolf(this._parentContainer, position);
+                break;
+            case LivingType.BEAR:
+                new Bear(this._parentContainer, position);
+                break;
+            case StaticType.CLOUD:
+                new Cloud(this._parentContainer, position);
+                break;
+            case StaticType.FOREST:
+                new Forest(this._parentContainer, position);
+                break;
+            case StaticType.GRASS:
+                new Grass(this._parentContainer, position);
+                break;
+        }
     }
 
     public createRandomEntity(ctor: any, type: EntityType): void {
