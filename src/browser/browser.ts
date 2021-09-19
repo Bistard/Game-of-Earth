@@ -28,9 +28,10 @@ export class Browser {
         
         StartInterface.onDidClickStartButton(() => {
             
-            this.startInterface.destroy();
-            this.gameInterface = new GameInterface(this.mainContainer);
-            this.gameInterface.render();
+            this.startInterface.destroy().then(() => {
+                this.gameInterface = new GameInterface(this.mainContainer);
+                this.gameInterface.render();
+            });
             
         });
 

@@ -1,7 +1,12 @@
+.entity {
+    position: absolute;
+}
+
+.entity:hover {
+    
+}
 
 .living-entity {
-    position: absolute;
-
     width: 30px;
     height: 30px;
     background-size: 30px;
@@ -24,7 +29,7 @@
 }
 
 .static-entity {
-    position: absolute;
+    
 }
 
 .grass-entity {

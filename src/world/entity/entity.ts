@@ -49,6 +49,7 @@ export abstract class Entity implements IEntity {
         this.position = position;
         this.parentContainer = parentContainer;
         this.container = container;
+        this.container.classList.add('entity');
 
         /**
          * @readonly maintains the state of World
