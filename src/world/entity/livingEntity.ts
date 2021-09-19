@@ -25,7 +25,7 @@ export enum SpeedRate {
 export enum TodoType {
     HUNGRY,
     SLEEP,
-    RUN_AWAY,
+    BEING_CHASE,
 }
 
 interface IPQItems {
@@ -34,7 +34,7 @@ interface IPQItems {
 }
 
 export abstract class LivingEntity extends Entity {
-
+    
     public health: number = 100;
     public hungry: number = 100;
     public energy: number = 100;
@@ -55,7 +55,12 @@ export abstract class LivingEntity extends Entity {
     public readonly todoState = {
         hungry: false,
         sleep: false,
-        runAway: false,
+        beingChase: false,
+    };
+
+    protected readonly state = {
+        beingChaseVecsBuffer: [] as IVector[],
+        beingChaseVecs: [] as IVector[],
     };
 
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
@@ -133,10 +138,12 @@ export abstract class LivingEntity extends Entity {
             case TodoType.SLEEP:
                 this._onSleep();
                 break;
-            case TodoType.RUN_AWAY:
-                this._onRunAway();
+            case TodoType.BEING_CHASE:
+                this._onBeingChase();
                 break;
         }
+
+        this.state.beingChaseVecsBuffer.length = 0; // do not touch
     }
 
     /***************************************************************************
@@ -159,8 +166,12 @@ export abstract class LivingEntity extends Entity {
         
     }
 
-    protected _onRunAway(): void {
-        // triggered when other entities are chasing 'me'
+    protected _onBeingChase(): void {
+        
+        this.state.beingChaseVecs = this.state.beingChaseVecsBuffer.slice();
+
+        // TODO: complete
+
     }
 
     /***************************************************************************
@@ -197,6 +208,54 @@ export abstract class LivingEntity extends Entity {
             // health detection
         }
 
+    }
+
+    protected _chase(entity: Entity | LivingEntity): void {
+
+        const s = this.speed / calcDistance(this.position, entity.position);
+        const dx = s * (entity.position.x - this.position.x);
+        const dy = s * (entity.position.y - this.position.y);
+        
+        const vect = {
+            x: this.position.x + dx,
+            y: this.position.y + dy
+        };
+
+        this._moveTo(vect);
+
+        
+        if (entity instanceof LivingEntity) {
+            // notify the entity that is being chased
+            entity._chaseNotified( {dx: dx, dy: dy} );
+        }
+
+    }
+
+    protected _chaseNotified(vector: IVector): void {
+
+        // if sleeping, the entity will not wake up
+        if (!this.todoState.sleep) {
+            
+            this.pq.queue({
+                priority: 0,
+                item: TodoType.BEING_CHASE,
+            });
+            
+            this.todoState.beingChase = true;
+            
+            this.state.beingChaseVecsBuffer.push(vector);
+        }
+
+    }
+
+    protected _runAwayFrom(entity: Entity): void {
+        const s = this.speed / calcDistance(this.position, entity.position);
+        const dx = s * (this.position.x - entity.position.x);
+        const dy = s * (this.position.y - entity.position.y);
+        this._moveTo({
+            x: this.position.x + dx,
+            y: this.position.y + dy,
+        });
     }
 
     protected _moveTo(position: IPosition): void {
@@ -342,26 +401,6 @@ export abstract class LivingEntity extends Entity {
             this.wanderFrameCount = 0;
         }
         this._moveInDir(this.wanderDirection);
-    }
-
-    protected _chase(entity: Entity): void {
-        const s = this.speed / calcDistance(this.position, entity.position);
-        const dx = s * (entity.position.x - this.position.x);
-        const dy = s * (entity.position.y - this.position.y);
-        this._moveTo({
-            x: this.position.x + dx,
-            y: this.position.y + dy
-        });
-    }
-
-    protected _runAwayFrom(entity: Entity): void {
-        const s = this.speed / calcDistance(this.position, entity.position);
-        const dx = s * (this.position.x - entity.position.x);
-        const dy = s * (this.position.y - entity.position.y);
-        this._moveTo({
-            x: this.position.x + dx,
-            y: this.position.y + dy
-        });
     }
 
 }
