@@ -1,7 +1,7 @@
 
 import { Emitter } from "../../common/event.js";
 import { IPosition, IVector } from "../../common/UI/domNode.js";
-import { calcDistance } from "../../common/utils/math.js";
+import { calcDistance, getEscapeVec } from "../../common/utils/math.js";
 import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
 import { Bear } from "./bear.js";
@@ -170,9 +170,10 @@ export abstract class LivingEntity extends Entity {
     protected _onBeingChase(): void {
         
         this.state.beingChaseVecs = this.state.beingChaseVecsBuffer.slice();
-
-        // TODO: complete
-
+        let escapeDir = getEscapeVec(this.state.beingChaseVecs);
+        escapeDir.dx *= (this.speed * this.speedrate);
+        escapeDir.dy *= (this.speed * this.speedrate);
+        this._moveInDir(escapeDir);
     }
 
     /***************************************************************************
@@ -247,16 +248,6 @@ export abstract class LivingEntity extends Entity {
             this.state.beingChaseVecsBuffer.push(vector);
         }
 
-    }
-
-    protected _runAwayFrom(entity: Entity): void {
-        const s = this.speed / calcDistance(this.position, entity.position);
-        const dx = s * (this.position.x - entity.position.x);
-        const dy = s * (this.position.y - entity.position.y);
-        this._moveTo({
-            x: this.position.x + dx,
-            y: this.position.y + dy,
-        });
     }
 
     protected _moveTo(position: IPosition): void {
@@ -402,7 +393,7 @@ export abstract class LivingEntity extends Entity {
             this.wanderFrameCount = 0;
         }
         this._moveInDir(this.wanderDirection);
-        // this.hungry -= this.hungryRate;
+        this.hungry -= this.hungryRate;
     }
 
 }

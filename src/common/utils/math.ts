@@ -28,7 +28,7 @@ export function getEscapeVec(runDirection: IVector[]): IVector {
     let deltaY: number = 0;
     for (let i = 0; i < runDirection.length; i++) {
         deltaX += runDirection[i]!.dx;
-        deltaY += runDirection[i]!.dx;
+        deltaY += runDirection[i]!.dy;
     }
     let normCoeff = calcDistance({ x: 0, y: 0 }, { x: deltaX, y: deltaY });
     return { dx: deltaX / normCoeff, dy: deltaY / normCoeff };
