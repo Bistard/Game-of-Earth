@@ -1,7 +1,7 @@
 import { IPosition } from "../../common/UI/domNode.js";
 import { calcDistance } from "../../common/utils/math.js";
 import { World } from "../world.js";
-import { LivingType, StaticType } from "./entity.js";
+import { Entity, LivingType, StaticType } from "./entity.js";
 import { LivingEntity, TodoType } from "./livingEntity.js";
 
 export class Rabbit extends LivingEntity {
@@ -31,17 +31,17 @@ export class Rabbit extends LivingEntity {
             case TodoType.HUNGRY:
                 const surroundings = this._checkSurroundEntity();
                 // find grass inside sightrange
-                for (let e of surroundings) {
-                    if (e.type == StaticType.GRASS) {
-                        const distance = calcDistance(this.position, e.position);
+                for (let entity of surroundings) {
+                    if (entity.type == StaticType.GRASS) {
+                        const distance = calcDistance(this.position, entity.position);
                         if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
                             // case when the grass is inside eat range
-                            this._eat(e.id);
+                            this._eat(entity);
                             this.hungry = 100;
                             // TODO: No specific plan on the number so far
                         } else {
                             // case when the grass is outside eat range
-                            this._chaseTo(e);
+                            this._chaseTo(entity);
                             this.hungry -= this.hungryRate;
                             this.pq.queue(todo);
                         }
@@ -50,14 +50,9 @@ export class Rabbit extends LivingEntity {
                 }
                 // no grass inside sightrange, continue randomMove
                 this.hungry -= this.hungryRate;
-                if(this.hungry == 0){
-                    for(let i = 0; i < World.entities.length; i++){
-                        if (World.entities[i] == this) {
-                            this.parentContainer.removeChild(this.container);
-                            console.log(World.entities.splice(i, 1));
-                            return;
-                        }
-                    }
+                if(this.hungry < 0) {
+                    Entity.removeEntity(this);
+                    return;
                 }
                 this.randomMove();
                 this.pq.queue(todo);

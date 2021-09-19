@@ -68,15 +68,8 @@ export abstract class LivingEntity extends Entity {
 
     }
 
-    protected _eat(entity: number): void {
-        for(let i = 0; i < World.entities.length; i++) {
-            if (World.entities[i]!.id == entity) {
-                const e = World.entities[i];
-                e?.parentContainer.removeChild(e.container);
-                World.entities.splice(i, 1);
-                break;
-            }
-        }
+    protected _eat(entity: Entity): void {
+        Entity.removeEntity(entity);
     }
 
     public override update(): void {
