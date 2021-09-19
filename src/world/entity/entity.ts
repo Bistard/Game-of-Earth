@@ -138,19 +138,10 @@ export abstract class Entity implements IEntity {
         Entity.nameTagContainer.innerHTML = Entity.getEntityTypeName(entity.type);
         entity.parentContainer.appendChild(Entity.nameTagContainer);
 
-        // debug
-        try {
-            console.log('hungry: ', (entity as any).hungry);
-            console.log('energy: ', (entity as any).energy);
-
-        } catch(err) {
-            // ignore
-        }
-        
         Entity.InfoContainer = document.createElement('div');
         Entity.InfoContainer.style.right = '5%';
         Entity.InfoContainer.style.bottom = '10px';
-        Entity.InfoContainer.id = 'entity-info-tag';
+        Entity.InfoContainer.id = 'entity-info-container';
         
         [
             {tagName: 'health', value: (entity as any).health},
@@ -158,25 +149,28 @@ export abstract class Entity implements IEntity {
             {tagName: 'energy', value: (entity as any).energy},
         ]
         .forEach(({tagName, value}) => {
-            
-        });
+            const tag = document.createElement('div');
+            tag.classList.add('entity-info-tag-container');
 
-        const healthTag = document.createElement('div');
-        healthTag.classList.add('entity-info-tag');
-        
-        
-        const hungryTag = document.createElement('div');
-        hungryTag.classList.add('entity-info-tag');
-        
-        const energyTag = document.createElement('div');
-        energyTag.classList.add('entity-info-tag');
+            const tagNameElement = document.createElement('div');
+            tagNameElement.classList.add('entity-info-tag-name');
+            tagNameElement.innerHTML = tagName;
+
+            const tagValueElement = document.createElement('div');
+            tagValueElement.classList.add('entity-info-tag-value');
+            tagValueElement.innerHTML = Math.round(value).toString();
+
+            tag.appendChild(tagNameElement);
+            tag.appendChild(tagValueElement);
+            Entity.InfoContainer.appendChild(tag);
+        });
 
         entity.parentContainer.appendChild(Entity.InfoContainer);
     }
 
     public static removeEntityTag(entity: Entity): void {
         entity.parentContainer.removeChild(Entity.nameTagContainer);
-        // entity.parentContainer.removeChild(Entity.InfoContainer);
+        entity.parentContainer.removeChild(Entity.InfoContainer);
     }
 
     public static getEntityTypeName(entity: EntityType): string {
