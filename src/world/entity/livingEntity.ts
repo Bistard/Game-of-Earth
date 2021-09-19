@@ -95,25 +95,25 @@ export abstract class LivingEntity extends Entity {
                 this.speed = 0.4;
                 this.healthRestoreRate = 0.05;
                 this.hungryRate = 0.02;
-                this.energyRate = 3;
+                this.energyRate = 0.05;
                 break;
             case LivingType.HUMAN:
                 this.speed = 0.5;
                 this.healthRestoreRate = 0.05;
                 this.hungryRate = 0.03;
-                this.energyRate = 3;
+                this.energyRate = 0.05;
                 break;
             case LivingType.WOLF:
                 this.speed = 0.6;
                 this.healthRestoreRate = 0.05;
                 this.hungryRate = 0.03;
-                this.energyRate = 3;
+                this.energyRate = 0.05;
                 break;
             case LivingType.BEAR:
                 this.speed = 0.4;
                 this.healthRestoreRate = 0.05;
                 this.hungryRate = 0.03;
-                this.energyRate = 3;
+                this.energyRate = 0.05;
                 break;
         }
 
@@ -182,12 +182,14 @@ export abstract class LivingEntity extends Entity {
         
         if (this.energy > 80) {
             this.pq.dequeue();
+            this.todoState.sleep = false;
         }
         
     }
 
     protected _onBeingChase(): void {
         if(this.state.beingChaseVecsBuffer.length == 0) { //not being chased anymore
+            console.log('dequing onBeingChase');
             this.pq.dequeue();
             this.todoState.beingChase = false;
             return;
@@ -209,6 +211,7 @@ export abstract class LivingEntity extends Entity {
         Entity.removeEntity(entity);
         this.hungry = 100;
         this.todoState.hungry = false;
+        console.log('dequing onEat');
         this.pq.dequeue();
     }
 
