@@ -89,8 +89,8 @@ export class World {
             initEntityCounts[i] = Math.floor((initEntityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT + 0.5);
         }
 
-        const instantiations = [Human, Human, Wolf, Bear, Grass, Human, Forest];
-        const instantiationsType = [LivingType.HUMAN, LivingType.HUMAN, LivingType.WOLF, LivingType.BEAR, StaticType.GRASS, LivingType.HUMAN, StaticType.FOREST];
+        const instantiations = [Human, Rabbit, Wolf, Bear, Grass, Human, Forest];
+        const instantiationsType = [LivingType.HUMAN, LivingType.RABBIT, LivingType.WOLF, LivingType.BEAR, StaticType.GRASS, LivingType.HUMAN, StaticType.FOREST];
         for (let i = 0; i < initEntityCounts.length; i++) {
 
             for(let j = 0; j < initEntityCounts[i]!; j++) {
