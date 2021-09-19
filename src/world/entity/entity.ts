@@ -16,7 +16,7 @@ export enum LivingType {
 }
 
 export enum StaticType {
-    GRASS = 0,
+    GRASS = 4,
     CLOUD,
     FOREST
 }
