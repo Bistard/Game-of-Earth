@@ -80,10 +80,14 @@ export abstract class Entity implements IEntity {
                 break;
             case StaticType.GRASS:
                 World.state.count.grass++;
-                this.dimension = new Dimension(30, 30);
+                this.dimension = new Dimension(20, 20);
                 break;
             case StaticType.CLOUD:
                 World.state.count.cloud++;
+                this.dimension = new Dimension(0, 0);
+                break;
+            case StaticType.FOREST:
+                World.state.count.forest++;
                 this.dimension = new Dimension(30, 30);
                 break;
         }
@@ -94,12 +98,19 @@ export abstract class Entity implements IEntity {
         let mlx = p1.x;
         let mly = p1.y;
         let mrx = p1.x + d1.width;
-        let mry = p1.x - d1.height;
+        let mry = p1.y + d1.height;
         let nlx = p2.x;
         let nly = p2.y;
         let nrx = p2.x + d2.width;
-        let nry = p2.x - d2.height;
-        return !((mlx >= nrx || nlx >= mrx) || (mry >= nly || nry >= mly));
+        let nry = p2.y + d2.height;
+        if (mlx > nrx || nlx > mrx) {
+            return false;
+        }
+        if (mry < nly || nry < mly) {
+            return false;
+        }
+        
+        return true;
     }
 
     public static getDimensionByClass(type: LivingType | StaticType): IDimension {
@@ -112,9 +123,9 @@ export abstract class Entity implements IEntity {
             case StaticType.GRASS:
                 return { width: 20, height: 20 };
             case StaticType.CLOUD:
-            case StaticType.FOREST:
-            default:
                 return { width: -1, height: -1 };
+            case StaticType.FOREST:
+                return { width: 30, height: 30 };
         }
     }
 

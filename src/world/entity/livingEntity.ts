@@ -24,8 +24,9 @@ export enum SpeedRate {
 
 export enum TodoType {
     HUNGRY,
-    TIRE,
-    RUN
+    SLEEP,
+    BEING_CHASE,
+    REPRODUCE,
 }
 
 interface IPQItems {
@@ -33,19 +34,17 @@ interface IPQItems {
     item: TodoType;
 }
 
-export interface BeingChasedEvent {
-
-}
-
 export abstract class LivingEntity extends Entity {
-
+    
     public health: number = 100;
     public hungry: number = 100;
     public energy: number = 100;
 
     public readonly speed: number;
     public speedrate: number = 1;
+    public readonly healthRestoreRate: number;
     public readonly hungryRate: number;
+    public readonly energyRate: number;
     public readonly sightRange: number;
     public readonly actionRange: number = Math.max(this.dimension.height, this.dimension.width) / 2;
 
@@ -53,16 +52,18 @@ export abstract class LivingEntity extends Entity {
     private wanderFrameCount = 0;
     protected wanderDirection: IVector = { dx: 0, dy: 0 };
 
-    // being chased
-    private static _onCreateEntity = new Emitter<BeingChasedEvent>();
-    public static onCreateEntity = LivingEntity._onCreateEntity.event;
+    protected readonly pq = new PriorityQueue({ comparator: (a: IPQItems, b: IPQItems) => { return a.priority - b.priority; } });
+    public readonly todoState = {
+        hungry: false,
+        sleep: false,
+        beingChase: false,
+        reproduce: false,
+    };
 
-    protected readonly pq: PriorityQueue<IPQItems>
-        = new PriorityQueue({
-            comparator: (a: IPQItems, b: IPQItems) => {
-                return a.priority - b.priority;
-            }
-        });
+    protected readonly state = {
+        beingChaseVecsBuffer: [] as IVector[],
+        beingChaseVecs: [] as IVector[],
+    };
 
     constructor(type: LivingType, position: IPosition, parentContainer: HTMLElement, container: HTMLElement) {
         super(type, position, parentContainer, container);
@@ -73,59 +74,202 @@ export abstract class LivingEntity extends Entity {
         switch (type) {
             case LivingType.RABBIT:
                 this.speed = 0.4;
-                this.hungryRate = 1;
+                this.healthRestoreRate = 0.05;
+                this.hungryRate = 0.02;
+                this.energyRate = 0.05;
                 break;
             case LivingType.HUMAN:
                 this.speed = 0.5;
-                this.hungryRate = 2;
+                this.healthRestoreRate = 0.05;
+                this.hungryRate = 0.03;
+                this.energyRate = 0.05;
                 break;
             case LivingType.WOLF:
                 this.speed = 0.6;
-                this.hungryRate = 3;
+                this.healthRestoreRate = 0.05;
+                this.hungryRate = 0.03;
+                this.energyRate = 0.05;
                 break;
             case LivingType.BEAR:
                 this.speed = 0.4;
-                this.hungryRate = 4;
+                this.healthRestoreRate = 0.05;
+                this.hungryRate = 0.03;
+                this.energyRate = 0.05;
                 break;
         }
 
-    }
-
-    protected _eat(entity: Entity): void {
-        console.log(entity);
-        Entity.removeEntity(entity);
     }
 
     public override update(): void {
 
-        // region
-        // manipulation ot pq
-        // endregion
-        if (this.hungry < 40) {
+        // detect if hungry
+        if (this.hungry < 40 && !this.todoState.hungry) {
             this.pq.queue({
-                priority: 2,
-                item: TodoType.HUNGRY
-            })
+                priority: 1,
+                item: TodoType.HUNGRY,
+            });
+            this.todoState.hungry = true;
         }
 
+        // detect if energy running out
+        if (this.energy < 30 && !this.todoState.sleep) {
+            this.pq.queue({
+                priority: 2,
+                item: TodoType.SLEEP,
+            });
+            this.todoState.sleep = true;
+        }
 
         this._update();
+    }
+
+    private _update(): void {
+
+        if (this.pq.length == 0) {
+            this._wander();
+            this._ifDie();
+            return;
+        }
+
+        const todo = this.pq.peek();
+
+        switch(todo.item) {
+            case TodoType.HUNGRY:
+                this._onHungry();
+                break;
+            case TodoType.SLEEP:
+                this._onSleep();
+                break;
+            case TodoType.BEING_CHASE:
+                this._onBeingChase();
+                break;
+        }
+
+        this.state.beingChaseVecsBuffer.length = 0; // do not touch
+    }
+
+    /***************************************************************************
+     * methods for specific livingEntity to override
+     **************************************************************************/
+
+    protected abstract _onHungry(): void;
+
+    protected _onSleep(): void {
+        // common method on dealing with running out of energy
+        // stopped and starting restoring energy
+        this.energy = Math.max(this.energy + this.energyRate, 100);
+        this.health = Math.max(this.health + this.healthRestoreRate, 100);
+        this.hungry = Math.min(this.hungry - this.hungryRate * 0.3, 0);
+        
+        if (this.energy > 80) {
+            this.pq.dequeue();
+        }
+        
+    }
+
+    protected _onBeingChase(): void {
+        
+        this.state.beingChaseVecs = this.state.beingChaseVecsBuffer.slice();
+
+        // TODO: complete
 
     }
 
-    protected abstract _update(): void;
+    /***************************************************************************
+     * methods for specific livingEntity to override (end)
+     **************************************************************************/
+    
+     protected _eat(entity: Entity): void {
+        Entity.removeEntity(entity);
+        this.hungry = 100;
+        this.todoState.hungry = false;
+    }
+
+    protected _eatOrChase(entity: Entity): void {
+        const distance = calcDistance(this.position, entity.position);
+        if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
+            // case when the grass is inside eat range
+            this._eat(entity);
+            this.pq.dequeue();
+        } else {
+            // case when the grass is outside eat range
+            this._chase(entity);
+            this.hungry -= this.hungryRate;
+        }
+    }
+
+    protected _ifDie(): void {
+
+        if (this.hungry <= 0) {
+            // hungry detection
+            const index = World.entities.indexOf(this);
+            World.entities.splice(index, 1);
+            this.parentContainer.removeChild(this.container);
+        } else if (this.health <= 0) {
+            // health detection
+        }
+
+    }
+
+    protected _chase(entity: Entity | LivingEntity): void {
+
+        const s = this.speed / calcDistance(this.position, entity.position);
+        const dx = s * (entity.position.x - this.position.x);
+        const dy = s * (entity.position.y - this.position.y);
+        
+        const vect = {
+            x: this.position.x + dx,
+            y: this.position.y + dy
+        };
+
+        this._moveTo(vect);
+
+        
+        if (entity instanceof LivingEntity) {
+            // notify the entity that is being chased
+            entity._chaseNotified( {dx: dx, dy: dy} );
+        }
+
+    }
+
+    protected _chaseNotified(vector: IVector): void {
+
+        // if sleeping, the entity will not wake up
+        if (!this.todoState.sleep) {
+            
+            this.pq.queue({
+                priority: 0,
+                item: TodoType.BEING_CHASE,
+            });
+            
+            this.todoState.beingChase = true;
+            
+            this.state.beingChaseVecsBuffer.push(vector);
+        }
+
+    }
+
+    protected _runAwayFrom(entity: Entity): void {
+        const s = this.speed / calcDistance(this.position, entity.position);
+        const dx = s * (this.position.x - entity.position.x);
+        const dy = s * (this.position.y - entity.position.y);
+        this._moveTo({
+            x: this.position.x + dx,
+            y: this.position.y + dy,
+        });
+    }
 
     protected _moveTo(position: IPosition): void {
         let xPos = position.x;
         let yPos = position.y;
         if (xPos < 15) xPos = 15;
         if (yPos < 15) yPos = 15;
-        if (xPos > window.screen.height - 15) xPos = window.screen.height - 15;
+        if (xPos > window.screen.width - 15) xPos = window.screen.width - 15;
         if (yPos > window.screen.height - 15) yPos = window.screen.height - 15;
-        this.container.style.left = position.x + 'px';
-        this.container.style.top = position.y + 'px';
-        this.position.x = position.x;
-        this.position.y = position.y;
+        this.container.style.left = xPos + 'px';
+        this.container.style.top = yPos + 'px';
+        this.position.x = xPos;
+        this.position.y = yPos;
     }
 
     protected _moveInDir(vec: IVector): void {
@@ -258,26 +402,6 @@ export abstract class LivingEntity extends Entity {
             this.wanderFrameCount = 0;
         }
         this._moveInDir(this.wanderDirection);
-    }
-
-    protected _chaseTo(entity: Entity): void {
-        const s = this.speed / calcDistance(this.position, entity.position);
-        const dx = s * (entity.position.x - this.position.x);
-        const dy = s * (entity.position.y - this.position.y);
-        this._moveTo({
-            x: this.position.x + dx,
-            y: this.position.y + dy
-        });
-    }
-
-    protected _runAwayFrom(entity: Entity): void {
-        const s = this.speed / calcDistance(this.position, entity.position);
-        const dx = s * (this.position.x - entity.position.x);
-        const dy = s * (this.position.y - entity.position.y);
-        this._moveTo({
-            x: this.position.x + dx,
-            y: this.position.y + dy
-        });
     }
 
 }

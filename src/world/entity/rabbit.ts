@@ -1,7 +1,6 @@
 import { IPosition } from "../../common/UI/domNode.js";
-import { calcDistance } from "../../common/utils/math.js";
 import { World } from "../world.js";
-import { Entity, LivingType, StaticType } from "./entity.js";
+import { LivingType, StaticType } from "./entity.js";
 import { LivingEntity, TodoType } from "./livingEntity.js";
 
 export class Rabbit extends LivingEntity {
@@ -11,47 +10,19 @@ export class Rabbit extends LivingEntity {
         this._render();
     }
 
-    protected override _update(): void {
-        if (this.pq.length == 0) {
-            this.randomMove();
-            this.hungry -= this.hungryRate;
-            if(this.hungry == 0){
-                Entity.removeEntity(this);
-            }
-            return;
+    protected override _onHungry(): void {
+       
+        const surds = this._checkSurroundEntity();
+        
+        const grass = surds.surround.grass;
+        const closestGrass = surds.shortest.grass;
+
+        if (grass.length) {
+            this._eatOrChase(closestGrass!);
         }
-        const todo = this.pq.dequeue();
-        switch(todo.item) {
-            case TodoType.HUNGRY:
-                const surroundings = this._checkSurroundEntity();
-                // find grass inside sightrange
-                for (let entity of surroundings) {
-                    if (entity.type == StaticType.GRASS) {
-                        const distance = calcDistance(this.position, entity.position);
-                        if(distance < this.actionRange) {
-                            // case when the grass is inside eat range
-                            this._eat(entity);
-                            this.hungry = 100;
-                            // TODO: No specific plan on the number so far
-                        } else {
-                            // case when the grass is outside eat range
-                            this._chaseTo(entity);
-                            this.hungry -= this.hungryRate;
-                            this.pq.queue(todo);
-                        }
-                        return;
-                    }
-                }
-                // no grass inside sightrange, continue randomMove
-                this.hungry -= this.hungryRate;
-                if(this.hungry < 0) {
-                    Entity.removeEntity(this);
-                    return;
-                }
-                this.randomMove();
-                this.pq.queue(todo);
-                break;
-        }
+    
+        this._ifDie();
+        this.randomMove();
     }
 
     protected override _render(): void {

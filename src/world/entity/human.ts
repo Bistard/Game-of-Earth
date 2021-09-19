@@ -10,7 +10,7 @@ export class Human extends LivingEntity {
         this._render();
     }
 
-    protected override _update(): void {
+    protected override _onHungry(): void {
 
     }
 

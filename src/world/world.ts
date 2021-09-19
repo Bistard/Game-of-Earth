@@ -34,7 +34,7 @@ export class World {
             bear: 0,
             grass: 0,
             cloud: 0,
-            tree: 0,
+            forest: 0,
         },
 
         currTime: 0,
@@ -61,6 +61,8 @@ export class World {
             GameInterface.updateCurrentTime();
         }, 1000 / World.state.TimeElapseRate);
         
+        // this.printWorldInformation();
+
     }
 
     /**
@@ -91,8 +93,8 @@ export class World {
             initEntityCounts[i] = Math.floor((initEntityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT + 0.5);
         }
 
-        const instantiations = [Human, Rabbit, Wolf, Bear, Grass, Cloud, Forest];
-        const instantiationsType = [LivingType.HUMAN, LivingType.RABBIT, LivingType.WOLF, LivingType.BEAR, StaticType.GRASS, StaticType.CLOUD, StaticType.FOREST];
+        const instantiations = [Human, Rabbit, Wolf, Bear, Grass, Human, Forest];
+        const instantiationsType = [LivingType.HUMAN, LivingType.RABBIT, LivingType.WOLF, LivingType.BEAR, StaticType.GRASS, LivingType.HUMAN, StaticType.FOREST];
         for (let i = 0; i < initEntityCounts.length; i++) {
 
             for(let j = 0; j < initEntityCounts[i]!; j++) {
@@ -122,15 +124,14 @@ export class World {
             newY = Browser.size.height * Math.random();
         
             let isAllChecked = true;
+            let entity: Entity;
             for (let k = 0; k < World.entities.length; k++) {
-                const entity = World.entities[k]!;
+                entity = World.entities[k]!;
 
-                // DEBUG: seems not working
-                // if (Entity.isOverlap({x: newX, y: newY}, entity.position, newDimension, entity.dimension)) {
-                //     isAllChecked = false;
-                //     console.log(entity, newX, newY);
-                //     break;
-                // }
+                if (Entity.isOverlap({x: newX, y: newY}, entity.position, newDimension, entity.dimension) === true) {
+                    isAllChecked = false;
+                    break;
+                }
 
             }
 
@@ -138,7 +139,7 @@ export class World {
                 isOverLap = true;
             }
         }
-
+        
         new ctor(this._parentContainer, {x: newX, y: newY});
 
     }

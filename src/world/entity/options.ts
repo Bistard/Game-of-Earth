@@ -9,7 +9,7 @@ import { Wolf } from "./wolf.js";
 
 export interface ISurroundEntities {
 
-    shortest?: {
+    shortest: {
         human?: Human,
         rabbit?: Rabbit,
         wolf?: Wolf,
@@ -20,13 +20,13 @@ export interface ISurroundEntities {
     }
 
     surround: {
-        human?: Human[],
-        rabbit?: Rabbit[],
-        wolf?: Wolf[],
-        bear?: Bear[],
-        grass?: Grass[],
-        cloud?: Cloud[],
-        forest?: Forest[],
+        human: Human[],
+        rabbit: Rabbit[],
+        wolf: Wolf[],
+        bear: Bear[],
+        grass: Grass[],
+        cloud: Cloud[],
+        forest: Forest[],
     }
 
 }
