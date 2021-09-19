@@ -22,7 +22,7 @@ export abstract class LivingEntity extends Entity {
     public readonly hungry: number = 100;
     public readonly energy: number = 100;
 
-    public readonly baseSpeed: number;
+    public readonly speed: number;
     public speedrate: number = 1;
     public readonly hungryRate: number;
     public readonly sightRange: number;
@@ -37,19 +37,19 @@ export abstract class LivingEntity extends Entity {
 
         switch (type) {
             case LivingType.RABBIT:
-                this.baseSpeed = 0.2;
+                this.speed = 0.2;
                 this.hungryRate = 1;
                 break;
             case LivingType.HUMAN:
-                this.baseSpeed = 0.25;
+                this.speed = 0.25;
                 this.hungryRate = 2;
                 break;
             case LivingType.WOLF:
-                this.baseSpeed = 0.3;
+                this.speed = 0.3;
                 this.hungryRate = 3;
                 break;
             case LivingType.BEAR:
-                this.baseSpeed = 0.2;
+                this.speed = 0.2;
                 this.hungryRate = 4;
                 break;
         }
@@ -103,25 +103,31 @@ export abstract class LivingEntity extends Entity {
 
     protected _wander(): void {
         this.wandering = true;
-        const dx = this.baseSpeed * this.speedrate * (Math.random() - 0.5) * 2;
-        const dy = this.baseSpeed * this.baseSpeed * (Math.random() - 0.5) * 2;
+        const dx = this.speed * this.speedrate * (Math.random() - 0.5) * 2;
+        const dy = Math.sqrt((this.speed*this.speedrate)^2 - dx^2);
         this._moveTo({ x: this.position.x + dx, y: this.position.y + dy });
     }
 
-    protected _chaseTo(entity: Entity): IVector {
+    protected _chaseTo(entity: Entity): void {
         this.wandering = false;
-        const s = this.baseSpeed / calcDistance(this.position, entity.position);
+        const s = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (entity.position.x - this.position.x);
         const dy = s * (entity.position.y - this.position.y);
-        return { dx: dx, dy: dy };
+        this._moveTo({
+            x: this.position.x + dx, 
+            y: this.position.y + dy
+        });
     }
 
-    protected _runAwayFrom(entity: Entity): IVector {
+    protected _runAwayFrom(entity: Entity): void {
         this.wandering = false;
-        const s = this.baseSpeed / calcDistance(this.position, entity.position);
+        const s = this.speed / calcDistance(this.position, entity.position);
         const dx = s * (this.position.x - entity.position.x);
         const dy = s * (this.position.y - entity.position.y);
-        return { dx: dx, dy: dy };
+        this._moveTo({
+            x: this.position.x + dx, 
+            y: this.position.y + dy
+        });
     }
 
 }

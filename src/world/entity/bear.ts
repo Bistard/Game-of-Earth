@@ -24,6 +24,7 @@ export class Bear extends LivingEntity {
         let surrounding: Entity[] = this._checkSurroundEntity();
         let human: Human[] = [];
         let wolf: Wolf[] = [];
+        this._moveTo({x: this.position.x+1, y: this.position.y +1});
         //preprocess, maybe put this as the checkSurroundingEntity in the livingENtity.ts
         for (let i = 0; i < surrounding.length; i++) {
             let classType = surrounding[i]?.container.classList;
@@ -33,6 +34,8 @@ export class Bear extends LivingEntity {
                 human.push(surrounding[i] as Human);
             }
         }
+
+        console.log("updating bear ...");
         
         function sortByDistance(a: Entity, b: Entity, c: IPosition) {
             return calcDistance(c, a.position) < calcDistance(c, b.position) ? -1 : 1;
@@ -69,7 +72,7 @@ export class Bear extends LivingEntity {
             this.speedrate = SpeedRate.SLOW;
             this._wander();
         }
-
+        this._render();
     }
 
     protected override _render(): void {
