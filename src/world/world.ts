@@ -17,7 +17,7 @@ enum TimeElapseRate {
 
 export class World {
 
-    private static readonly INIT_TOTAL_ENTITY_COUNT = 40;
+    private static readonly INIT_TOTAL_ENTITY_COUNT = 30;
 
     private readonly _parentContainer: HTMLElement;
 
@@ -59,10 +59,7 @@ export class World {
      */
     private _updateWorld(): void {
 
-        const length = World.entities.length;
-        for (let i = 0; i < length; i++) {
-            
-            const entity = World.entities[i]!;
+        for (const entity of World.entities) {
             entity.update();
 
         }
