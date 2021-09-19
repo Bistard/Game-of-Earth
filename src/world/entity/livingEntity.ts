@@ -1,7 +1,6 @@
 
-import { Emitter } from "../../common/event.js";
 import { IPosition, IVector } from "../../common/UI/domNode.js";
-import { calcDistance, getEscapeVec } from "../../common/utils/math.js";
+import { calcDistance, getEscapeVec, getRandomInt } from "../../common/utils/math.js";
 import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
 import { Bear } from "./bear.js";
@@ -68,6 +67,7 @@ export abstract class LivingEntity extends Entity {
 
     set energy(val: number) {
         this._energy = val;
+
         if (val === 0 && !this.state.outOfEnergy) {
             this.state.outOfEnergy = true;
             setTimeout(() => {
@@ -76,7 +76,7 @@ export abstract class LivingEntity extends Entity {
                 } else {
                     this.state.outOfEnergy = false;
                 }
-            }, 5000);
+            }, getRandomInt(3000, 7000));
         }
     }
 
@@ -94,26 +94,46 @@ export abstract class LivingEntity extends Entity {
             case LivingType.RABBIT:
                 this.speed = 0.4;
                 this.healthRestoreRate = 0.05;
+<<<<<<< HEAD
                 this.hungryRate = 0.01 + 0.01*Math.random();
                 this.energyRate = 0.03 + 0.02*Math.random();
+=======
+                this.hungryRate = 0.02;
+                this.energyRate = 3;
+>>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
                 break;
             case LivingType.HUMAN:
                 this.speed = 0.5;
                 this.healthRestoreRate = 0.05;
+<<<<<<< HEAD
                 this.hungryRate = 0.01 + 0.02*Math.random();
                 this.energyRate = 0.02 + 0.03*Math.random();
+=======
+                this.hungryRate = 0.03;
+                this.energyRate = 3;
+>>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
                 break;
             case LivingType.WOLF:
                 this.speed = 0.6;
                 this.healthRestoreRate = 0.05;
+<<<<<<< HEAD
                 this.hungryRate = 0.02 + 0.01*Math.random();
                 this.energyRate = 0.03 + 0.02*Math.random();
+=======
+                this.hungryRate = 0.03;
+                this.energyRate = 3;
+>>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
                 break;
             case LivingType.BEAR:
                 this.speed = 0.4;
                 this.healthRestoreRate = 0.05;
+<<<<<<< HEAD
                 this.hungryRate = 0.02 + 0.01*Math.random();
                 this.energyRate = 0.02 + 0.03*Math.random();
+=======
+                this.hungryRate = 0.03;
+                this.energyRate = 3;
+>>>>>>> d264b9c24e51feb73dc53dd009b4854c6bfa3a4a
                 break;
         }
 
@@ -122,7 +142,7 @@ export abstract class LivingEntity extends Entity {
     public override update(): void {
 
         // detect if hungry
-        if (this.hungry < 70 && !this.todoState.hungry) {
+        if (this.hungry < 50 && !this.todoState.hungry) {
             this.pq.queue({
                 priority: 1,
                 item: TodoType.HUNGRY,
@@ -230,6 +250,7 @@ export abstract class LivingEntity extends Entity {
             this._goDie();
         } else if (this.health <= 0) {
             // health detection
+            this._goDie();
         }
 
     }
@@ -404,6 +425,7 @@ export abstract class LivingEntity extends Entity {
     }
 
     protected _wander(): void {
+        
         this.wandering = true;
         this.wanderFrameCount++;
         if (this.wanderFrameCount > (180 - Math.random() * 120)) {

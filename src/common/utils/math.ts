@@ -33,3 +33,16 @@ export function getEscapeVec(runDirection: IVector[]): IVector {
     let normCoeff = calcDistance({ x: 0, y: 0 }, { x: deltaX, y: deltaY });
     return { dx: deltaX / normCoeff, dy: deltaY / normCoeff };
 }
+
+/**
+ * This example returns a random integer between the specified values. The value 
+ * is no lower than min (or the next integer greater than min if min isn't an 
+ * integer), and is less than (but not equal to) max.
+ * 
+ * The maximum is exclusive and the minimum is inclusive
+ */
+export function getRandomInt(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+  }

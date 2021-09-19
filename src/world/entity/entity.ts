@@ -169,8 +169,10 @@ export abstract class Entity implements IEntity {
     }
 
     public static removeEntityTag(entity: Entity): void {
+        
         entity.parentContainer.removeChild(Entity.nameTagContainer);
         entity.parentContainer.removeChild(Entity.InfoContainer);
+        
     }
 
     public static getEntityTypeName(entity: EntityType): string {
