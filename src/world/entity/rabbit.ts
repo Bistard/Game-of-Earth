@@ -25,8 +25,8 @@ export class Rabbit extends LivingEntity {
             }
             return;
         }
-        const nextTODO = this.pq.dequeue();
-        switch(nextTODO.item) {
+        const todo = this.pq.dequeue();
+        switch(todo.item) {
             case TodoType.HUNGRY:
                 const surroundings = this._checkSurroundEntity();
                 // find grass inside sightrange
@@ -42,7 +42,7 @@ export class Rabbit extends LivingEntity {
                             // case when the grass is outside eat range
                             this._chaseTo(e);
                             this.hungry -= this.hungryRate;
-                            this.pq.queue(nextTODO);
+                            this.pq.queue(todo);
                         }
                         return;
                     }
@@ -50,7 +50,7 @@ export class Rabbit extends LivingEntity {
                 // no grass inside sightrange, continue randomMove
                 this.hungry -= this.hungryRate;
                 this.randomMove();
-                this.pq.queue(nextTODO);
+                this.pq.queue(todo);
                 break;
         }
     }

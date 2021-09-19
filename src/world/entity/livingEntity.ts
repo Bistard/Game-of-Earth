@@ -69,9 +69,9 @@ export abstract class LivingEntity extends Entity {
     }
 
     protected _eat(entity: number): void {
-        for(let i = 0; i < World.entities.length; i++){
+        for(let i = 0; i < World.entities.length; i++) {
             if (World.entities[i]!.id == entity) {
-                console.log(World.entities.splice(i, 1));
+                World.entities.splice(i, 1);
                 break;
             }
         }

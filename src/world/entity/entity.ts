@@ -1,12 +1,5 @@
 import { Dimension, IDimension, IPosition } from "../../common/UI/domNode.js";
 import { World } from "../world.js";
-import { Bear } from "./bear.js";
-import { Cloud } from "./cloud.js";
-import { Forest } from "./forest.js";
-import { Grass } from "./grass.js";
-import { Human } from "./human.js";
-import { Rabbit } from "./rabbit.js";
-import { Wolf } from "./wolf.js";
 
 export enum LivingType {
     HUMAN = 0,
