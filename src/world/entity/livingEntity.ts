@@ -1,6 +1,7 @@
-import PriorityQueue from "ts-priority-queue";
+
 import { IPosition } from "../../common/UI/domNode.js";
 import { calcDistance } from "../../common/utils/math.js";
+import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
 import { Entity, LivingType } from "./entity.js";
 
