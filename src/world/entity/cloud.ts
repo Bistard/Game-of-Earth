@@ -10,7 +10,10 @@ export class Cloud extends StaticEntity {
     }
     
     public override update(): void {
-
+        const dx = 20 * (Math.random() - 0.5) * 2;
+        const dy = 20 * (Math.random() - 0.5) * 2;
+        this.position.x += dx;
+        this.position.y += dy;
     }
 
     protected override _render(): void {

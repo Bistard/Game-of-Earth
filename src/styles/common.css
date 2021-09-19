@@ -1,9 +1,9 @@
-.funcText {
+.func-text {
     cursor: pointer;
     user-select: none; 
 }
 
-.pureText {
+.pure-text {
     user-select: none; /* cannot select character */
 }
 

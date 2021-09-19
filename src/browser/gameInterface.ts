@@ -6,6 +6,9 @@ export class GameInterface {
     public readonly parentContainer: HTMLElement;
     public container: HTMLElement;
 
+    public static currTimeElement: HTMLElement;
+    public static currTimeCount: number = -1;
+
     public readonly world: World;
     
     constructor(parent: HTMLElement) {
@@ -19,6 +22,7 @@ export class GameInterface {
 
     public render(): void {
         this.parentContainer.appendChild(this.container);
+        this.renderCurrentTime();
         this.renderToolList();
         this.registerListeners();
         
@@ -38,6 +42,20 @@ export class GameInterface {
 
     }
 
+    public renderCurrentTime(): void {
+        GameInterface.currTimeElement = document.createElement('div');
+        GameInterface.currTimeElement.id = 'current-time';
+        GameInterface.currTimeElement.classList.add('pure-text');
+        GameInterface.updateCurrentTime();
+        
+        this.container.appendChild(GameInterface.currTimeElement);
+    }
+
+    public static updateCurrentTime(): void {
+        GameInterface.currTimeCount++;
+        GameInterface.currTimeElement.innerHTML = Math.floor(GameInterface.currTimeCount / 60) + ' : ' + GameInterface.currTimeCount % 60;
+    }
+
     public renderToolList(): void {
 
         const toolList = new ToolList(this.container);
@@ -45,7 +63,7 @@ export class GameInterface {
     }
 
     public runGame(): void {
-
+        
         this.world.run();
 
     }

@@ -34,6 +34,7 @@ export abstract class LivingEntity extends Entity {
     public speedrate: number = 1;
     public readonly hungryRate: number;
     public readonly sightRange: number;
+    public readonly actionRange: number = Math.max(this.dimension.height, this.dimension.width) / 2;
 
     protected wandering: boolean = false;
     private wanderFrameCount = 0;
@@ -51,9 +52,9 @@ export abstract class LivingEntity extends Entity {
         super(type, position, parentContainer, container);
 
         this.container.classList.add('living-entity');
-        this.sightRange = 300;
-
-        switch (type) {
+        this.sightRange = 500;
+        
+        switch(type) {
             case LivingType.RABBIT:
                 this.speed = 0.4;
                 this.hungryRate = 1;
@@ -74,13 +75,9 @@ export abstract class LivingEntity extends Entity {
 
     }
 
-    protected _eat(entity: number): void {
-        for (let i = 0; i < World.entities.length; i++) {
-            if (World.entities[i]!.id == entity) {
-                World.entities.splice(i, 1);
-                break;
-            }
-        }
+    protected _eat(entity: Entity): void {
+        console.log(entity);
+        Entity.removeEntity(entity);
     }
 
     public override update(): void {

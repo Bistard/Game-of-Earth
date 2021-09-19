@@ -30,6 +30,7 @@ export abstract class Entity implements IEntity {
 
     public readonly parentContainer: HTMLElement;
     public readonly container: HTMLElement;
+    public static nameTagContainer: HTMLElement;
     
     public readonly id: number;
     public readonly type: EntityType;
@@ -42,6 +43,18 @@ export abstract class Entity implements IEntity {
         this.position = position;
         this.parentContainer = parentContainer;
         this.container = container;
+        this.container.classList.add('entity');
+
+        /**
+         * @readonly hovering create name tag
+         */
+        this.container.addEventListener('mouseenter', () => {
+            Entity.createEntityTag(this);
+        });
+
+        this.container.addEventListener('mouseout', () => {
+            Entity.removeEntityTag(this);
+        });
 
         /**
          * @readonly maintains the state of World
@@ -103,6 +116,50 @@ export abstract class Entity implements IEntity {
             default:
                 return { width: -1, height: -1 };
         }
+    }
+
+    public static createEntityTag(entity: Entity): void {
+        Entity.nameTagContainer = document.createElement('div');
+        Entity.nameTagContainer.style.left = '45%';
+        Entity.nameTagContainer.style.top = '10px';
+        Entity.nameTagContainer.id = 'entity-name-tag';
+        Entity.nameTagContainer.innerHTML = Entity.getEntityTypeName(entity.type);
+        entity.parentContainer.appendChild(Entity.nameTagContainer);
+    }
+
+    public static removeEntityTag(entity: Entity): void {
+        entity.parentContainer.removeChild(Entity.nameTagContainer);
+    }
+
+    public static getEntityTypeName(entity: EntityType): string {
+        switch(entity) {
+            case LivingType.HUMAN:
+                return 'Human';
+            case LivingType.RABBIT:
+                return 'Rabbit';
+            case LivingType.WOLF:
+                return 'Wolf';
+            case LivingType.BEAR:
+                return 'Bear';
+            case StaticType.CLOUD:
+                return 'Cloud';
+            case StaticType.GRASS:
+                return 'Grass';
+            case StaticType.FOREST:
+                return 'Forest';                    
+        }
+    }
+
+    public static removeEntity(entity: Entity, index?: number): void {
+        if (index === undefined) {
+            index = World.entities.indexOf(entity);
+            if (index === undefined) {
+                throw 'cannot find entity to be removed';
+            }
+        }
+
+        World.entities.splice(index!, 1);
+        entity.parentContainer.removeChild(entity.container);
     }
 
     public abstract update(): void;

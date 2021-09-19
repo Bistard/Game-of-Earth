@@ -8,6 +8,8 @@ import { Wolf } from "./entity/wolf.js";
 import { Grass } from "./entity/grass.js"
 import { Cloud } from "./entity/cloud.js"
 import { Forest } from "./entity/forest.js"
+import { GameInterface } from "../browser/gameInterface.js";
+import { calcDistance } from "../common/utils/math.js";
 
 enum TimeElapseRate {
     ONE = 1,
@@ -47,11 +49,18 @@ export class World {
 
         this._initMap();
         
+        this.printWorldInformation();
+
+        // main loop
         setInterval(() => {
             this._updateWorld();
         }, 1 / (60 * World.state.TimeElapseRate) * 1000);
         
-        this.printWorldInformation();
+        // update time for each second
+        setInterval(() => {
+            GameInterface.updateCurrentTime();
+        }, 1000 / World.state.TimeElapseRate);
+        
     }
 
     /**

@@ -1,14 +1,15 @@
 @import "./common.css";
 @import "./world/entity.css";
 @import "./world/world.css";
-@import "./startInterface/startInterface.css";
-@import "./startInterface/gameInterface.css";
+@import "./interface/startInterface.css";
+@import "./interface/gameInterface.css";
 
 body {
     margin: 0px;
     padding: 0px;
     font-size: 10pt;
     background-color: white;
+    overflow: hidden;
     font-family: 'Microsoft Yahei', '微软雅黑', 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', '나눔바른고딕', 'Nanum Barun Gothic', '맑은고딕', 'Malgun Gothic', sans-serif;
 }
 
@@ -27,7 +28,6 @@ img {
     flex-wrap: nowrap;
     width:100vw;
     height:100vh;
-    overflow: hidden;
     box-sizing: border-box;
 }
 
