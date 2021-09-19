@@ -14,6 +14,10 @@ export interface IDimension {
     height: number;
 }
 
+export interface IVector {
+	dx: number;
+	dy: number;
+}
 
 
 export class Dimension implements IDimension {
