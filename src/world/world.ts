@@ -7,6 +7,7 @@ import { Rabbit } from "./entity/rabbit.js";
 import { Wolf } from "./entity/wolf.js";
 import { Grass } from "./entity/grass.js"
 import { Forest } from "./entity/forest.js"
+import { Cloud } from "./entity/cloud.js"
 import { GameInterface } from "../browser/gameInterface.js";
 import { Cloud } from "./entity/cloud.js";
 
