@@ -69,6 +69,12 @@ export abstract class LivingEntity extends Entity {
     protected abstract _update(): void;
 
     protected _moveTo(position: IPosition): void {
+        let xPos = position.x;
+        let yPos = position.y;
+        if (xPos < 15) xPos = 15;
+        if (yPos < 15) yPos = 15;
+        if (xPos > window.screen.height - 15) xPos = window.screen.height - 15;
+        if (yPos > window.screen.height - 15) yPos = window.screen.height - 15;
         this.container.style.left = position.x + 'px';
         this.container.style.top = position.y + 'px';
         this.position.x = position.x;
@@ -97,9 +103,9 @@ export abstract class LivingEntity extends Entity {
 
     protected _wander(): void {
         this.wandering = true;
-        const dx = this.baseSpeed * this.speedrate * (Math.random()-0.5) * 2;
-        const dy = this.baseSpeed * this.baseSpeed * (Math.random()-0.5) * 2;
-        this._moveTo({x: this.position.x + dx, y: this.position.y + dy});
+        const dx = this.baseSpeed * this.speedrate * (Math.random() - 0.5) * 2;
+        const dy = this.baseSpeed * this.baseSpeed * (Math.random() - 0.5) * 2;
+        this._moveTo({ x: this.position.x + dx, y: this.position.y + dy });
     }
 
     protected _chaseTo(entity: Entity): IVector {
