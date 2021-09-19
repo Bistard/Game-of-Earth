@@ -8,6 +8,7 @@ import { Wolf } from "./entity/wolf.js";
 import { Grass } from "./entity/grass.js"
 import { Forest } from "./entity/forest.js"
 import { GameInterface } from "../browser/gameInterface.js";
+import { Cloud } from "./entity/cloud.js";
 
 enum TimeElapseRate {
     ONE = 1,

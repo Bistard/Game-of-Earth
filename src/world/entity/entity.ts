@@ -31,6 +31,7 @@ export abstract class Entity implements IEntity {
     public readonly parentContainer: HTMLElement;
     public readonly container: HTMLElement;
     public static nameTagContainer: HTMLElement;
+    public static InfoContainer: HTMLElement;
     
     public readonly id: number;
     public readonly type: EntityType;
@@ -136,10 +137,46 @@ export abstract class Entity implements IEntity {
         Entity.nameTagContainer.id = 'entity-name-tag';
         Entity.nameTagContainer.innerHTML = Entity.getEntityTypeName(entity.type);
         entity.parentContainer.appendChild(Entity.nameTagContainer);
+
+        // debug
+        try {
+            console.log('hungry: ', (entity as any).hungry);
+            console.log('energy: ', (entity as any).energy);
+
+        } catch(err) {
+            // ignore
+        }
+        
+        Entity.InfoContainer = document.createElement('div');
+        Entity.InfoContainer.style.right = '5%';
+        Entity.InfoContainer.style.bottom = '10px';
+        Entity.InfoContainer.id = 'entity-info-tag';
+        
+        [
+            {tagName: 'health', value: (entity as any).health},
+            {tagName: 'hungry', value: (entity as any).hungry},
+            {tagName: 'energy', value: (entity as any).energy},
+        ]
+        .forEach(({tagName, value}) => {
+            
+        });
+
+        const healthTag = document.createElement('div');
+        healthTag.classList.add('entity-info-tag');
+        
+        
+        const hungryTag = document.createElement('div');
+        hungryTag.classList.add('entity-info-tag');
+        
+        const energyTag = document.createElement('div');
+        energyTag.classList.add('entity-info-tag');
+
+        entity.parentContainer.appendChild(Entity.InfoContainer);
     }
 
     public static removeEntityTag(entity: Entity): void {
         entity.parentContainer.removeChild(Entity.nameTagContainer);
+        // entity.parentContainer.removeChild(Entity.InfoContainer);
     }
 
     public static getEntityTypeName(entity: EntityType): string {
