@@ -3,6 +3,7 @@
     width: 100vw;
     height: 100vh;
     background-color: lightblue;
+    overflow: hidden;
 }
 
 #start-interface-container {
