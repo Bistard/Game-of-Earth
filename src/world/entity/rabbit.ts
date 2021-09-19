@@ -1,7 +1,7 @@
 import { IPosition } from "../../common/UI/domNode.js";
 import { calcDistance } from "../../common/utils/math.js";
 import { World } from "../world.js";
-import { Entity, LivingType, StaticType } from "./entity.js";
+import { LivingType, StaticType } from "./entity.js";
 import { LivingEntity, TodoType } from "./livingEntity.js";
 
 export class Rabbit extends LivingEntity {
@@ -13,25 +13,27 @@ export class Rabbit extends LivingEntity {
 
     protected override _onHungry(): void {
        
-        const surroundings = this._checkSurroundEntity();
-        // find grass inside sightrange
-        for (let e of surroundings) {
-            if (e.type == StaticType.GRASS) {
-                const distance = calcDistance(this.position, e.position);
-                if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
-                    // case when the grass is inside eat range
-                    this._eat(e.id);
-                    this.hungry = 100;
-                    // TODO: No specific plan on the number so far
-                } else {
-                    // case when the grass is outside eat range
-                    this._chaseTo(e);
-                    this.hungry -= this.hungryRate;
-                    this.pq.queue({priority: 2, item: TodoType.HUNGRY});
-                }
-                return;
+        const surds = this._checkSurroundEntity();
+        
+        const grass = surds.surround.grass;
+        const closestGrass = surds.shortest.grass;
+
+        if (grass.length) {
+            const distance = calcDistance(this.position, closestGrass!.position);
+            if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
+                // case when the grass is inside eat range
+                this._eat(closestGrass!);
+                this.hungry = 100;
+                // TODO: No specific plan on the number so far
+            } else {
+                // case when the grass is outside eat range
+                this._chaseTo(closestGrass!);
+                this.hungry -= this.hungryRate;
+                this.pq.queue({priority: 2, item: TodoType.HUNGRY});
             }
+            return;
         }
+    
         // no grass inside sightrange, continue randomMove
         this.hungry -= this.hungryRate;
         if(this.hungry == 0){
