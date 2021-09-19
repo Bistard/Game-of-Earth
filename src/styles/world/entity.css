@@ -2,10 +2,6 @@
     position: absolute;
 }
 
-.entity:hover {
-    
-}
-
 .living-entity {
     width: 30px;
     height: 30px;
@@ -44,4 +40,21 @@
     height: 30px;
     background-size: 30px;
     background-image: url("../../assets/tree.png");
+}
+
+#entity-name-tag {
+
+    position: absolute;
+
+    width: auto;
+    height: 30px;
+    
+    padding: 10px;
+    line-height: 30px;
+    font-size: 30px;
+    border-radius: 10px;
+
+    user-select: none;
+    background-color: lightgrey;
+    color: black;
 }
