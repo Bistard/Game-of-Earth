@@ -1,6 +1,6 @@
 import { Browser } from "../browser/browser.js";
 import { IPosition } from "../common/UI/domNode.js";
-import { Entity, EntityType } from "./entity/entity.js";
+import { Entity, EntityType, LivingType, StaticType } from "./entity/entity.js";
 import { Bear } from "./entity/bear.js";
 import { Human } from "./entity/human.js";
 import { Rabbit } from "./entity/rabbit.js";
@@ -17,7 +17,7 @@ enum TimeElapseRate {
 
 export class World {
 
-    private static readonly INIT_TOTAL_ENTITY_COUNT = 40;
+    private static readonly INIT_TOTAL_ENTITY_COUNT = 100;
 
     private readonly _parentContainer: HTMLElement;
 
@@ -71,28 +71,28 @@ export class World {
 
     private _initMap(): void {
 
-        // entityCounts[i]: i'th entity count
-        const entityCounts: number[] = [];
+        // initEntityCounts[i]: i'th entity count
+        const initEntityCounts: number[] = [];
         
         let total = 0;
         for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE; i++) {
             const rate = Math.random();
             total += rate;
-            entityCounts.push(rate);
+            initEntityCounts.push(rate);
         } 
         
         for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE; i++) {
-            entityCounts[i] = Math.floor((entityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT + 0.5);
+            initEntityCounts[i] = Math.floor((initEntityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT + 0.5);
         }
 
         const instantiations = [Human, Rabbit, Wolf, Bear, Grass, Cloud, Forest];
-        for (let i = 0; i < entityCounts.length; i++) {
+        const instantiationsType = [LivingType.HUMAN, LivingType.RABBIT, LivingType.WOLF, LivingType.BEAR, StaticType.GRASS, StaticType.CLOUD, StaticType.FOREST];
+        for (let i = 0; i < initEntityCounts.length; i++) {
 
-            for(let j = 0; j < entityCounts[i]!; j++) {
-                new instantiations[i]!(
-                    this._parentContainer, 
-                    {x: Browser.size.width * Math.random(), y: Browser.size.height * Math.random()}
-                );
+            for(let j = 0; j < initEntityCounts[i]!; j++) {
+
+                this.createRandomEntity(instantiations[i]!, instantiationsType[i]!);
+                
             }
 
         }
@@ -101,6 +101,40 @@ export class World {
 
     public createEntity(position: IPosition, type: EntityType): void {
         // do stuff here
+    }
+
+    public createRandomEntity(ctor: any, type: EntityType): void {
+
+        let newX!: number
+        let newY!: number;
+        let newDimension = Entity.getDimensionByClass(type);
+
+        let isOverLap = false;
+        while (isOverLap === false) {
+        
+            newX = Browser.size.width * Math.random();
+            newY = Browser.size.height * Math.random();
+        
+            let isAllChecked = true;
+            for (let k = 0; k < World.entities.length; k++) {
+                const entity = World.entities[k]!;
+
+                // DEBUG: seems not working
+                if (Entity.isOverlap({x: newX, y: newY}, entity.position, newDimension, entity.dimension)) {
+                    isAllChecked = false;
+                    console.log(entity, newX, newY);
+                    break;
+                }
+
+            }
+
+            if (isAllChecked) {
+                isOverLap = true;
+            }
+        }
+
+        new ctor(this._parentContainer, {x: newX, y: newY});
+
     }
 
     public printWorldInformation(): void {

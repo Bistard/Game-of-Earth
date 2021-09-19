@@ -14,6 +14,8 @@ export enum SpeedRate {
 
 export enum TodoType {
     HUNGRY,
+    TIRE,
+    RUN
 }
 
 interface IPQItems {
@@ -85,6 +87,7 @@ export abstract class LivingEntity extends Entity {
                 item: TodoType.HUNGRY
             })
         }
+        
 
         this._update();
         

@@ -9,7 +9,7 @@ export class Bear extends LivingEntity {
         this._render();
     }
 
-    public override update(): void {
+    protected override _update(): void {
         // TODO
     }
 
