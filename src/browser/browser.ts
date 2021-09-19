@@ -1,6 +1,7 @@
 import { IDimension } from "../common/UI/domNode.js";
 import { GameInterface } from "./gameInterface.js";
 import { StartInterface } from "./startInterface.js";
+import { ToolList } from "./toolList.js";
 
 export class Browser {
 
@@ -15,6 +16,7 @@ export class Browser {
     };
 
     constructor() {
+        this.registerListeners();
         this.init();
     }
 
@@ -35,6 +37,14 @@ export class Browser {
             
         });
 
+    }
+
+    public registerListeners(): void {
+        document.addEventListener('keydown', (event: _KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                ToolList.removeListeners();
+            }
+        });
     }
 
 }

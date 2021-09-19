@@ -35,7 +35,6 @@
     height: auto;
 
     border-radius: 10px;
-
     background-color: lightgrey;
 }
 
@@ -132,4 +131,45 @@
     width: auto;
     height: 30px;
     line-height: 30px;
+}
+
+#cursor {
+
+    z-index: 101;
+
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    
+    background-size: 30px;
+
+    cursor: none;
+}
+
+.cursor-rabbit {
+    background-image: url("../../assets/rabbit.png");
+}
+
+.cursor-human {
+    background-image: url("../../assets/human.png");
+}
+
+.curosr-wolf {
+    background-image: url("../../assets/wolf.png");
+}
+
+.cursor-bear {
+    background-image: url("../../assets/bear.png");
+}
+
+.cursor-grass {
+    background-image: url("../../assets/grass.png");
+}
+
+.cursor-forest {
+    background-image: url("../../assets/tree.png");
+}
+
+.cursor-cloud {
+    background-image: url("../../assets/cloud.png");
 }

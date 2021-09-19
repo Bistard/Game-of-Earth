@@ -188,7 +188,7 @@ export abstract class Entity implements IEntity {
             case StaticType.GRASS:
                 return 'Grass';
             case StaticType.FOREST:
-                return 'Forest';                    
+                return 'Tree';
         }
     }
 
