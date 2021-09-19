@@ -83,18 +83,18 @@ export class World {
         const initEntityCounts: number[] = [];
         
         let total = 0;
-        for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE; i++) {
+        for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE - 2; i++) {
             const rate = Math.random();
             total += rate;
             initEntityCounts.push(rate);
         } 
         
-        for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE; i++) {
-            initEntityCounts[i] = Math.floor((initEntityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT + 0.5);
+        for (let i = 0; i < Entity.TOTAL_ENTITY_TYPE - 2; i++) {
+            initEntityCounts[i] = Math.floor((initEntityCounts[i]! / total) * World.INIT_TOTAL_ENTITY_COUNT * 0.5 + 0.5);
         }
 
-        const instantiations = [Human, Rabbit, Wolf, Bear, Grass, Human, Forest];
-        const instantiationsType = [LivingType.HUMAN, LivingType.RABBIT, LivingType.WOLF, LivingType.BEAR, StaticType.GRASS, LivingType.HUMAN, StaticType.FOREST];
+        const instantiations = [Human, Rabbit, Wolf, Bear, Cloud];
+        const instantiationsType = [LivingType.HUMAN, LivingType.RABBIT, LivingType.WOLF, LivingType.BEAR, StaticType.CLOUD];
         for (let i = 0; i < initEntityCounts.length; i++) {
 
             for(let j = 0; j < initEntityCounts[i]!; j++) {
@@ -105,6 +105,13 @@ export class World {
 
         }
 
+        for (let i = 0; i < World.INIT_TOTAL_ENTITY_COUNT * 0.3; i++) {
+            this.createRandomEntity(Grass, StaticType.GRASS);
+        }
+
+        for (let i = 0; i < World.INIT_TOTAL_ENTITY_COUNT * 0.2; i++) {
+            this.createRandomEntity(Forest, StaticType.FOREST);
+        }
     }
 
     public createEntity(position: IPosition, type: EntityType): void {
