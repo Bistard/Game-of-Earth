@@ -17,7 +17,7 @@ enum TimeElapseRate {
 
 export class World {
 
-    private static readonly INIT_TOTAL_ENTITY_COUNT = 100;
+    private static readonly INIT_TOTAL_ENTITY_COUNT = 40;
 
     private readonly _parentContainer: HTMLElement;
 
@@ -120,11 +120,11 @@ export class World {
                 const entity = World.entities[k]!;
 
                 // DEBUG: seems not working
-                if (Entity.isOverlap({x: newX, y: newY}, entity.position, newDimension, entity.dimension)) {
-                    isAllChecked = false;
-                    console.log(entity, newX, newY);
-                    break;
-                }
+                // if (Entity.isOverlap({x: newX, y: newY}, entity.position, newDimension, entity.dimension)) {
+                //     isAllChecked = false;
+                //     console.log(entity, newX, newY);
+                //     break;
+                // }
 
             }
 

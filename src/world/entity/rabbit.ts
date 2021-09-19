@@ -30,7 +30,7 @@ export class Rabbit extends LivingEntity {
                         const distance = calcDistance(this.position, e.position);
                         if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
                             // case when the grass is inside eat range
-                            this._eat(e);
+                            this._eat(e.id);
                             this.hungry = 100;
                             // TODO: No specific plan on the number so far
                         } else {
