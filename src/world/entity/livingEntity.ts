@@ -33,6 +33,7 @@ export abstract class LivingEntity extends Entity {
     public readonly speed: number;
     public readonly hungryRate: number;
     public readonly sightRange: number;
+    public readonly actionRange: number = Math.max(this.dimension.height, this.dimension.width) / 2;
 
     protected readonly pq: PriorityQueue<IPQItems>
         = new PriorityQueue({
@@ -49,7 +50,7 @@ export abstract class LivingEntity extends Entity {
         
         switch(type) {
             case LivingType.RABBIT:
-                this.speed = 0.2;
+                this.speed = 0.1;
                 this.hungryRate = 1;
                 break;
             case LivingType.HUMAN:
@@ -69,6 +70,7 @@ export abstract class LivingEntity extends Entity {
     }
 
     protected _eat(entity: Entity): void {
+        console.log(entity);
         Entity.removeEntity(entity);
     }
 

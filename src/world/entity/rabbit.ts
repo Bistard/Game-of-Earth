@@ -16,13 +16,7 @@ export class Rabbit extends LivingEntity {
             this.randomMove();
             this.hungry -= this.hungryRate;
             if(this.hungry == 0){
-                for(let i = 0; i < World.entities.length; i++){
-                    if (World.entities[i] == this) {
-                        this.parentContainer.removeChild(this.container);
-                        console.log(World.entities.splice(i, 1));
-                        break;
-                    }
-                }
+                Entity.removeEntity(this);
             }
             return;
         }
@@ -34,7 +28,7 @@ export class Rabbit extends LivingEntity {
                 for (let entity of surroundings) {
                     if (entity.type == StaticType.GRASS) {
                         const distance = calcDistance(this.position, entity.position);
-                        if(distance < Math.max(this.dimension.height, this.dimension.width) / 2) {
+                        if(distance < this.actionRange) {
                             // case when the grass is inside eat range
                             this._eat(entity);
                             this.hungry = 100;
