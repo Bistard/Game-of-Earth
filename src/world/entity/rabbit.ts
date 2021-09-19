@@ -19,10 +19,11 @@ export class Rabbit extends LivingEntity {
 
         if (grass.length) {
             this._eatOrChase(closestGrass!);
+        } else {
+            this._wander();
         }
     
         this._ifDie();
-        this.randomMove();
     }
 
     protected override _render(): void {
@@ -30,20 +31,5 @@ export class Rabbit extends LivingEntity {
         this.container.classList.add('rabbit-entity');
         this._moveTo(this.position);
 
-    }
-
-    private randomMove(): void {
-        let dx = this.speed * Math.random();
-        let dy = Math.sqrt(this.speed^2 - dx^2);
-        if (Math.random() >= 0.5) {
-            dx *= -1;
-        }
-        if (Math.random() >= 0.5) {
-            dy *= -1;
-        } 
-        this._moveTo({
-            x: this.position.x + dx,
-            y: this.position.y + dy
-        })
     }
 }
