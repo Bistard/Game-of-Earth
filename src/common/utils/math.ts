@@ -3,7 +3,6 @@ import { IPosition, IVector } from "../UI/domNode.js";
 
 export function calcDistance(pos1: IPosition, pos2: IPosition): number {
     return Math.sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2);
-<<<<<<< HEAD
 }
 
 export function getDiagLength(a: number, b: number) : number{
@@ -33,6 +32,4 @@ export function getEscapeVec(runDirection: IVector[]): IVector {
     }
     let normCoeff = calcDistance({ x: 0, y: 0 }, { x: deltaX, y: deltaY });
     return { dx: deltaX / normCoeff, dy: deltaY / normCoeff };
-=======
->>>>>>> master
 }
