@@ -159,7 +159,18 @@ export abstract class Entity implements IEntity {
             case StaticType.FOREST:
                 return 'Forest';                    
         }
+    }
 
+    public static removeEntity(entity: Entity, index?: number): void {
+        if (index === undefined) {
+            index = World.entities.indexOf(entity);
+            if (index === undefined) {
+                throw 'cannot find entity to be removed';
+            }
+        }
+
+        World.entities.splice(index!, 1);
+        entity.parentContainer.removeChild(entity.container);
     }
 
     public abstract update(): void;

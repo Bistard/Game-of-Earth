@@ -1,9 +1,18 @@
 
+import { Emitter } from "../../common/event.js";
 import { IPosition } from "../../common/UI/domNode.js";
 import { calcDistance } from "../../common/utils/math.js";
 import PriorityQueue from "../../common/utils/priorityQueue/PriorityQueue.js";
 import { World } from "../world.js";
+import { Bear } from "./bear.js";
+import { Cloud } from "./cloud.js";
 import { Entity, LivingType } from "./entity.js";
+import { Forest } from "./forest.js";
+import { Grass } from "./grass.js";
+import { Human } from "./human.js";
+import { ICheckSurroundOptions, ISurroundEntities } from "./options.js";
+import { Rabbit } from "./rabbit.js";
+import { Wolf } from "./wolf.js";
 
 export enum SpeedRate {
     VERY_SLOW = 0.5,
@@ -24,6 +33,10 @@ interface IPQItems {
     item: TodoType;
 }
 
+export interface BeingChasedEvent {
+    
+}
+
 export abstract class LivingEntity extends Entity {
 
     public health: number = 100;
@@ -33,6 +46,11 @@ export abstract class LivingEntity extends Entity {
     public readonly speed: number;
     public readonly hungryRate: number;
     public readonly sightRange: number;
+    public readonly actionRange: number = Math.max(this.dimension.height, this.dimension.width) / 2;
+
+    // being chased
+    private static _onCreateEntity = new Emitter<BeingChasedEvent>();
+    public static onCreateEntity = LivingEntity._onCreateEntity.event;
 
     protected readonly pq: PriorityQueue<IPQItems>
         = new PriorityQueue({
@@ -45,7 +63,7 @@ export abstract class LivingEntity extends Entity {
         super(type, position, parentContainer, container);
     
         this.container.classList.add('living-entity');
-        this.sightRange = 300;
+        this.sightRange = 500;
         
         switch(type) {
             case LivingType.RABBIT:
@@ -68,15 +86,9 @@ export abstract class LivingEntity extends Entity {
 
     }
 
-    protected _eat(entity: number): void {
-        for(let i = 0; i < World.entities.length; i++) {
-            if (World.entities[i]!.id == entity) {
-                const e = World.entities[i];
-                e?.parentContainer.removeChild(e.container);
-                World.entities.splice(i, 1);
-                break;
-            }
-        }
+    protected _eat(entity: Entity): void {
+        console.log(entity);
+        Entity.removeEntity(entity);
     }
 
     public override update(): void {
@@ -105,24 +117,42 @@ export abstract class LivingEntity extends Entity {
         this.position.y = position.y;
     }
 
-    protected _checkSurroundEntity(): Entity[] {
+    protected _checkSurroundEntity(opts?: ICheckSurroundOptions): ISurroundEntities {
 
-        const entities: Entity[] = [];
+        let shortest: {
+            human: Human,
+            rabbit: Rabbit,
+            wolf: Wolf,
+            bear: Bear,
+            grass: Grass,
+            cloud: Cloud,
+            forest: Forest,
+        };
+
+        const entities = {
+            human: [],
+            rabbit: [],
+            wolf: [],
+            bear: [],
+            grass: [],
+            cloud: [],
+            forest: [],
+        };
 
         const length = World.entities.length;
         for (let i = 0; i < length; i++) {
             const otherEntity = World.entities[i]!;
-            if (this === otherEntity) {
+            if (this === otherEntity || filter(otherEntity) === false) {
                 continue;
             }
 
             const distance = calcDistance(this.position, otherEntity.position);
             if (distance <= this.sightRange) {
-                entities.push(otherEntity);
+                // entities.push(otherEntity);
             }
         }
         
-        return entities;
+        // return entities;
     }
 
     protected _chaseTo(entity: Entity):void {
