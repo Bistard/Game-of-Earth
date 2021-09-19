@@ -80,14 +80,14 @@ export abstract class Entity implements IEntity {
                 break;
             case StaticType.GRASS:
                 World.state.count.grass++;
-                this.dimension = new Dimension(30, 30);
+                this.dimension = new Dimension(20, 20);
                 break;
             case StaticType.CLOUD:
                 World.state.count.cloud++;
-                this.dimension = new Dimension(30, 30);
+                this.dimension = new Dimension(0, 0);
                 break;
             case StaticType.FOREST:
-                World.state.count.cloud++;
+                World.state.count.forest++;
                 this.dimension = new Dimension(30, 30);
                 break;
         }
@@ -109,6 +109,7 @@ export abstract class Entity implements IEntity {
         if (mry < nly || nry < mly) {
             return false;
         }
+        
         return true;
     }
 
@@ -122,9 +123,9 @@ export abstract class Entity implements IEntity {
             case StaticType.GRASS:
                 return { width: 20, height: 20 };
             case StaticType.CLOUD:
-            case StaticType.FOREST:
-            default:
                 return { width: -1, height: -1 };
+            case StaticType.FOREST:
+                return { width: 30, height: 30 };
         }
     }
 
