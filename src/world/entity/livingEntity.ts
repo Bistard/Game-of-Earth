@@ -15,8 +15,8 @@ export enum SpeedRate {
 
 export enum TodoType {
     HUNGRY,
-    TIRE,
-    RUN
+    OUT_OF_ENERGY,
+    RUN_AWAY,
 }
 
 interface IPQItems {
@@ -81,22 +81,72 @@ export abstract class LivingEntity extends Entity {
 
     public override update(): void {
 
-        // region
-        // manipulation ot pq
-        // endregion
+        // detect if hungry
         if (this.hungry < 40) {
             this.pq.queue({
                 priority: 2,
                 item: TodoType.HUNGRY
             })
         }
-        
+
+        // detect if energy running out
+        if (1) {
+
+        }
 
         this._update();
-        
     }
 
-    protected abstract _update(): void;
+    private _update(): void {
+
+        if (this.pq.length == 0) {
+            // this._wander();
+            this.hungry -= this.hungryRate;
+            if (this.hungry == 0) {
+                for(let i = 0; i < World.entities.length; i++) {
+                    if (World.entities[i] == this) {
+                        this.parentContainer.removeChild(this.container);
+                        console.log(World.entities.splice(i, 1));
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+
+        const todo = this.pq.dequeue();
+        switch(todo.item) {
+            case TodoType.HUNGRY:
+                this._onHungry();
+                break;
+            case TodoType.OUT_OF_ENERGY:
+                this._onRunningOutOfEnergy();
+                break;
+            case TodoType.RUN_AWAY:
+                this._onRunAway();
+                break;
+        }
+    }
+
+    /***************************************************************************
+     * methods for specific livingEntity to override
+     **************************************************************************/
+
+    protected abstract _onHungry(): void;
+
+    protected _onRunningOutOfEnergy(): void {
+        // common method on dealing with running out of energy
+
+        // stoped and starting restoring energy
+    }
+
+    protected _onRunAway(): void {
+        // triggered when other entities are chasing 'me'
+    }
+
+    /***************************************************************************
+     * methods for specific livingEntity to override (end)
+     **************************************************************************/
 
     protected _moveTo(position: IPosition): void {
         this.container.style.left = position.x + 'px';
